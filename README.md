@@ -10,3 +10,7 @@ cd gpt6-hackathon
 ```
 
 Project setup and run instructions will be added as the application takes shape.
+
+## Design documents
+
+- [LLM 小人社会模拟器：系统设计与开发计划](docs/agent-society-design.md)
