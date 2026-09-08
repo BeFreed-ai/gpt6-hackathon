@@ -5,6 +5,7 @@ description = "A live, observable society of independently thinking LLM citizens
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.116.0",
+    "jsonschema>=4.26.0",
     "openai>=1.107.0",
     "pydantic>=2.11.0",
     "python-dotenv>=1.1.0",

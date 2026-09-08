@@ -79,6 +79,8 @@ class UrbanSystem:
         return (8 + self.world.time / self.world.day_length * 24) % 24
 
     def is_open(self, item: WorldObject) -> bool:
+        if item.metadata.get("quake_damage"):
+            return False
         start, end = item.metadata.get("hours", [0, 24])
         scheduled = (
             start <= self.hour < end if start < end else self.hour >= start or self.hour < end
@@ -97,6 +99,8 @@ class UrbanSystem:
         ) < item.metadata.get("beds", 2)
 
     def describe(self, item: WorldObject) -> dict:
+        from app.disasters import structure_for
+
         return {
             "id": item.id,
             "kind": item.kind,
@@ -105,6 +109,7 @@ class UrbanSystem:
             "width": item.width,
             "height": item.height,
             "metadata": dict(item.metadata),
+            "structure": structure_for(item),
             "open_now": self.is_open(item),
             "in_use": self.occupants(item),
             "observed_at": round(self.world.time, 1),
@@ -151,6 +156,7 @@ class UrbanSystem:
             ActionType.BUY,
             ActionType.COOK,
             ActionType.CLEAN,
+            ActionType.REPAIR,
             ActionType.RENT_HOME,
             ActionType.WORK,
             ActionType.REST,
@@ -160,6 +166,17 @@ class UrbanSystem:
         }:
             return None
         if action == ActionType.REST:
+            clinic = self.world.objects.get(intent.target_id or "")
+            if getattr(self.world, "sf_economy", None) and clinic and clinic.kind == "clinic":
+                if not self.is_open(clinic):
+                    return self.fail(agent, intent, "This clinic is closed.")
+                if self.world._approach(agent, intent, clinic, 46):
+                    return True
+                if self.occupants(clinic) >= min(
+                    clinic.metadata.get("capacity", 2), clinic.metadata.get("care_stock", 0)
+                ):
+                    return self.fail(agent, intent, "No unreserved care capacity is available.")
+                return self.start(agent, intent, clinic, 12)
             return self.start(agent, intent, None, 12)
         target = self.world.objects.get(intent.target_id or "")
         if action == ActionType.WORK and not target:
@@ -168,6 +185,14 @@ class UrbanSystem:
             target = self.world.objects.get(agent.home_id or "")
         if not target:
             return self.fail(agent, intent, "Choose a known facility or item.")
+        if action == ActionType.REPAIR:
+            if not target.metadata.get("quake_damage"):
+                return self.fail(
+                    agent, intent, "Choose a facility with observed earthquake damage."
+                )
+            if self.world._approach(agent, intent, target, 45):
+                return True
+            return self.start(agent, intent, target, 12)
         if action == ActionType.CLEAN:
             if target.kind not in {"waste", "toilet", "kitchen"}:
                 return self.fail(agent, intent, "Clean street waste, a toilet or a kitchen.")
@@ -175,6 +200,8 @@ class UrbanSystem:
                 return True
             return self.start(agent, intent, target, 9)
         if action == ActionType.RENT_HOME:
+            if not self.is_open(target):
+                return self.fail(agent, intent, "This home is closed or damaged.")
             rent = float(target.metadata.get("rent", 0))
             if target.kind != "home" or agent.home_id == target.id:
                 return self.fail(agent, intent, "Choose another home with a vacant bed.")
@@ -186,8 +213,16 @@ class UrbanSystem:
                 return True
             agent.credits = round(agent.credits - rent, 2)
             self.world.economy.city_balance += rent
-            agent.home_id = target.id
-            agent.rent_arrears = 0
+            calibration = getattr(self.world, "sf_economy", None)
+            if calibration:
+                calibration.move_home(agent, target)
+                ledger = calibration.state["agents"][agent.id]
+                ledger["rent_prepaid_credits"] = round(
+                    ledger.get("rent_prepaid_credits", 0) + rent, 2
+                )
+            else:
+                agent.home_id = target.id
+                agent.rent_arrears = 0
             agent.current_action = f"rented a bed at {target.name}"
             self.world.emit(
                 "housing",
@@ -214,6 +249,12 @@ class UrbanSystem:
             return self.fail(
                 agent, intent, "A private room requires a tenancy or accepted roommate invitation."
             )
+        if (
+            action == ActionType.WORK
+            and target.metadata.get("employment_basis") == "assigned_only"
+            and agent.workplace_id != target.id
+        ):
+            return self.fail(agent, intent, "You do not have a job at this workplace.")
         if self.world._approach(agent, intent, target, 46):
             return True
         capacity = target.metadata.get("capacity", target.metadata.get("beds", 2))
@@ -254,6 +295,8 @@ class UrbanSystem:
         if action == ActionType.WORK:
             company = self.world.economy.companies.get(target.id)
             if company:
+                if company.closed:
+                    return self.fail(agent, intent, "This company has closed.")
                 if agent.id != company.founder_id and agent.id not in company.employees:
                     return self.fail(
                         agent, intent, "Ask the founder for a job offer and accept it first."
@@ -274,12 +317,26 @@ class UrbanSystem:
                 return self.start(agent, intent, target, 14, reserved_credits=cost, wage=wage)
             if "wage" not in target.metadata:
                 return self.fail(agent, intent, "This facility is not offering a paid shift.")
-            # City-backed baseline jobs are an explicit external monetary source.
-            return self.start(agent, intent, target, 14, wage=float(target.metadata["wage"]))
+            calibration = getattr(self.world, "sf_economy", None)
+            wage = (
+                calibration.shift_wage(agent, target)
+                if calibration
+                else float(target.metadata["wage"])
+            )
+            if wage <= 0:
+                return self.fail(
+                    agent,
+                    intent,
+                    "You have completed the available paid shifts for this budget day.",
+                )
+            # Baseline wages are recorded external inflows, not spendable city debt.
+            return self.start(agent, intent, target, 14, wage=wage)
         return False
 
     def buy(self, agent: AgentState, intent: ActionIntent, target: WorldObject) -> bool:
         company = self.world.economy.companies.get(target.id)
+        if company and company.closed:
+            return self.fail(agent, intent, "This company has closed.")
         if not company and target.kind not in {"market", "cafe", "dining"}:
             return self.fail(agent, intent, "Choose a shop, meal service or company storefront.")
         stock = company.stock if company else target.metadata.get("stock", 0)
@@ -437,6 +494,18 @@ class UrbanSystem:
                     "The facility disappeared before completion; reservations refunded.",
                 )
                 continue
+            if (
+                target
+                and not target.metadata.get("open", True)
+                and activity.action != ActionType.REPAIR
+            ):
+                self.cancel(agent)
+                self.world._fail_action(
+                    agent,
+                    ActionIntent(action=activity.action),
+                    "The facility closed before completion; reservations refunded.",
+                )
+                continue
             action = activity.action
             agent.activity = None
             agent.next_think_at = self.world.time + 0.2
@@ -454,8 +523,13 @@ class UrbanSystem:
                     self.world.economy.city_balance += activity.reserved_credits
                     self.world.economy.sync(company)
                 else:
-                    self.world.economy.city_balance -= activity.wage
-                    if target.kind in {"market", "cafe"}:
+                    calibration = getattr(self.world, "sf_economy", None)
+                    if calibration:
+                        calibration.record_shift(agent, activity.wage)
+                        calibration.produce_service(target)
+                    else:
+                        self.world.economy.city_balance -= activity.wage
+                    if not calibration and target.kind in {"market", "cafe"}:
                         target.metadata["stock"] = min(30, target.metadata.get("stock", 0) + 3)
                 agent.credits = round(agent.credits + activity.wage, 2)
                 agent.energy = max(0, agent.energy - 5)
@@ -469,6 +543,24 @@ class UrbanSystem:
                 for _ in range(3):
                     self.create_carried(agent, "food", "Shared Kitchen Meal")
                 result = "cooked three meals from two food items"
+            elif action == ActionType.REPAIR:
+                integrity = min(100, target.metadata.get("structural_integrity", 70) + 30)
+                target.metadata.update(condition=integrity, structural_integrity=integrity)
+                if integrity == 100:
+                    target.metadata.pop("quake_damage", None)
+                    target.metadata.update(
+                        damage_state="intact", open=not target.metadata.get("closed", False)
+                    )
+                else:
+                    target.metadata.update(damage_state="rebuilding", open=False)
+                result = f"repaired {target.name}: structural integrity {integrity}%"
+                self.world.emit(
+                    "repair",
+                    f"{agent.name} {result}.",
+                    actor_id=agent.id,
+                    position=target.position,
+                    radius=150,
+                )
             elif action == ActionType.CLEAN:
                 if target.kind == "waste":
                     self.world.objects.pop(target.id)
@@ -481,6 +573,11 @@ class UrbanSystem:
                 agent.cleanliness = min(100, agent.cleanliness + 8)
                 target.metadata["condition"] = max(0, target.metadata.get("condition", 100) - 4)
                 result = f"used {target.name}"
+            elif action == ActionType.REST and target and target.kind == "clinic":
+                target.metadata["care_stock"] = max(0, target.metadata.get("care_stock", 0) - 1)
+                agent.health = min(100, agent.health + 18)
+                agent.energy = min(100, agent.energy + 12)
+                result = f"received care at {target.name}"
             else:
                 indoors = action == ActionType.SEEK_SHELTER and target.kind != "bench"
                 agent.energy = min(100, agent.energy + (38 if indoors else 16))
@@ -501,7 +598,13 @@ class UrbanSystem:
     def new_day(self) -> None:
         for item in list(self.world.objects.values()):
             if item.kind in {"dining", "market", "cafe"}:
-                item.metadata["stock"] = 16 if item.kind == "dining" else 12
+                if "daily_external_stock" in item.metadata:
+                    item.metadata["stock"] = min(
+                        item.metadata["stock_capacity"],
+                        item.metadata.get("stock", 0) + item.metadata["daily_external_stock"],
+                    )
+                else:
+                    item.metadata["stock"] = 16 if item.kind == "dining" else 12
             elif item.kind == "depot":
                 item.metadata["stock"] = 30
             elif item.kind == "garden":

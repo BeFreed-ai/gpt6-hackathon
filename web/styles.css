@@ -216,7 +216,7 @@ html, body { background: #292e24; }
 .readout-label, .eyebrow { font-size: 8px; letter-spacing: 1.2px; }
 .connection-dot { border-radius: 0; box-shadow: none; }.connection-dot.online { background: #748c4e; box-shadow: 2px 2px #bdc39a; }
 .workspace { grid-template-columns: minmax(0, 1fr) 310px; border: 2px solid #1e261d; border-top: 0; }
-.simulation-panel { grid-template-rows: 56px minmax(0, 1fr) 62px; border-right: 3px solid #62664b; }
+.simulation-panel { grid-template-rows: 56px minmax(0, 1fr) 62px auto; border-right: 3px solid #62664b; }
 .sim-toolbar { gap: 12px; padding: 10px 12px; background: #ded6b9; border-bottom: 2px solid #727956; }
 .transport-controls, .intervention-controls { gap: 5px; }.tool-divider { background: #bbb394; flex-shrink: 0; }.toolbar-label { color: #797c61; font-size: 8px; }
 button { color: #535b40; border: 1px solid #9b9b7c; background: #f0e8cc; box-shadow: inset 1px 1px #fff8e3, 0 2px #9b9b7c; transition: none; }
@@ -253,3 +253,75 @@ button:active { transform: translateY(1px); box-shadow: none; }
 @media (max-width: 1100px) { .toolbar-label { display: none; }.tool-button { padding: 0 6px; }.workspace { grid-template-columns: minmax(0, 1fr) 275px; }.city-stats article { padding: 0 9px; }.world-readout { gap: 14px; }.world-readout > div { padding-left: 14px; } }
 @media (max-width: 850px) { .brand h1 { font-size: 13px; }.brand p { font-size: 6px; }.world-readout strong { font-size: 10px; }.city-stats span { display: block; font-size: 7px; }.city-stats strong { font-size: 17px; }.map-key { gap: 8px; font-size: 7px; }.camera-controls { bottom: 48px; } }
 @media (max-width: 700px) { .app-shell { height: auto; min-height: 100dvh; padding: 6px; grid-template-rows: 70px auto 30px; }.topbar { padding: 0 12px; }.workspace { grid-template-columns: 1fr; }.simulation-panel { height: 66vh; min-height: 430px; border-right: 0; grid-template-rows: 51px minmax(0, 1fr) 55px; }.observer-panel { height: 560px; border-top: 3px solid #63664a; }.world-readout > div:first-child { display: none; }.world-readout > div:last-of-type { display: grid; padding-left: 8px; }.brand-mark { display: none; }.footer-bar { justify-content: space-between; }.map-caption { font-size: 7px; }.camera-controls { bottom: 13px; }.map-key { bottom: 46px; }.empty-inspector { padding: 20px; }.empty-orbit { margin-bottom: 16px; }.field-notes { margin-top: 22px; max-width: 320px; } }
+
+/* Public calibration stays separate from the selected citizen's private story. */
+.simulation-panel { grid-template-rows: 56px minmax(0, 1fr) 62px auto; }
+#geo-map { display: none; position: absolute; inset: 0; }
+.geographic #geo-map { display: block; }
+.geographic #world-canvas { visibility: hidden; pointer-events: none; }
+.geographic .map-caption { color: #3c514d; text-shadow: 0 1px #fff; right: 58px; }
+.map-status { position: absolute; top: 36px; left: 14px; right: 54px; pointer-events: none; font: 9px/1.5 "DM Mono", monospace; color: #445350; background: #fffffff0; padding: 6px 9px; width: fit-content; max-width: calc(100% - 68px); border: 1px solid #d5dcd5; }
+.geographic-controls { position: absolute; left: 14px; top: 88px; display: flex; gap: 5px; }
+.geographic-controls button { padding: 7px 10px; font-size: 10px; background: #fffffff0; color: #435449; border-color: #b4c2b7; }
+.geographic-controls button[aria-pressed="true"] { background: #446b69; color: white; }
+.geographic .camera-controls { bottom: 40px; }
+.geographic .map-key { bottom: 40px; background: #fffffff0; color: #435449; border-color: #b4c2b7; }
+.maplibregl-ctrl-attrib { font-size: 10px; }
+.maplibregl-ctrl-scale { background: #fffffff0; color: #435449; }
+.maplibregl-canvas { outline: none; }
+.maplibregl-canvas.pixel-map { image-rendering: pixelated; }
+.public-figure-notice { padding: 12px; border: 1px solid #ba9146; background: #fff0c8; font-size: 10px; line-height: 1.6; }
+.public-figure-notice a { color: #326f83; }
+@media (max-width: 700px) {
+  .simulation-panel { grid-template-rows: 51px minmax(0, 1fr) 55px auto; }
+  .geographic .map-key { bottom: 76px; }
+  .map-status { font-size: 8px; }
+  .geographic-controls { top: 97px; }
+}
+.observer-panel { grid-template-rows: 42px auto minmax(0, 1fr); }
+.panel-tabs { grid-row: 1; }
+.observer-panel > .panel-content { grid-row: 3; }
+.population-panel { grid-row: 2; min-width: 0; max-height: 42vh; overflow-y: auto; border-bottom: 1px solid #b9b394; background: #e6dfc7; scrollbar-width: thin; scrollbar-color: #ada98a #e6dfc7; }
+.population-panel > summary { padding: 12px 14px; color: #465c34; cursor: pointer; font-size: 11px; line-height: 1.6; }
+.population-panel > summary:focus-visible { outline: 2px solid #c17b41; outline-offset: -3px; }
+.population-panel > summary span { display: block; margin-left: 13px; color: #646b51; font-size: 10px; }
+.population-content { padding: 0 14px 14px; overflow-wrap: anywhere; }
+.population-content p, .population-content li { margin: 8px 0; color: #626b51; font-size: 10px; line-height: 1.7; }
+.population-content .calibration-scenario { color: #34392b; font-weight: 500; }
+.population-content h3 { margin: 17px 0 9px; font-size: 11px; font-weight: 500; }
+.population-content ul { margin: 0; padding-left: 17px; }
+.population-content .facts dt, .population-content .facts dd { font-size: 10px; line-height: 1.5; }
+.population-content .facts dt { color: #646b51; }
+.population-content .facts dt, #agent-background .facts dt { flex: 0 0 42%; }
+.population-content .facts dd, #agent-background .facts dd { min-width: 0; overflow-wrap: anywhere; }
+.calibration-employer { padding: 12px 0; border-top: 1px solid #c9c0a2; }
+.calibration-employer h4 { margin: 6px 0; font-size: 12px; font-weight: 500; }
+.calibration-sources a { color: #465c34; text-underline-offset: 2px; }
+.calibration-sources a:focus-visible { outline: 2px solid #c17b41; outline-offset: 2px; }
+.background-note, .agent-biography p { margin: 8px 0; color: #626b51; font-size: 11px; line-height: 1.7; overflow-wrap: anywhere; }
+#agent-background .facts dt, #agent-background .facts dd { font-size: 10px; line-height: 1.5; }
+@media (max-width: 700px) { .population-panel { max-height: 260px; } }
+/* Runtime safety remains visible even when no citizen is selected. */
+.runtime-status { padding: 10px 14px; color: #52634c; background: #e8eadf; font: 11px/1.6 "DM Mono", monospace; overflow-wrap: anywhere; }
+#project-list .business-card small { display: block; margin-top: 6px; }
+/* Visual effects never change the authoritative simulation state. */
+.quake-dust {
+  position: absolute; inset: 0; pointer-events: none; z-index: 4;
+  background: radial-gradient(ellipse at 30% 65%, #bc956999, transparent 65%),
+    radial-gradient(ellipse at 75% 45%, #d7bb8499, transparent 60%);
+  animation: quake-dust 4s ease-out forwards;
+}
+@keyframes quake-dust { 0% { opacity: 0; } 20% { opacity: 0.9; } 100% { opacity: 0; } }
+.disaster-status {
+  position: absolute;
+  left: 16px;
+  bottom: 62px;
+  max-width: calc(100% - 32px);
+  z-index: 5;
+  padding: 10px 14px;
+  background: rgba(50, 36, 29, 0.93);
+  color: #ffe2ad;
+  border-left: 4px solid #d57c45;
+  font: 11px/1.5 "DM Mono", monospace;
+  pointer-events: none;
+}

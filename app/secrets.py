@@ -1,4 +1,4 @@
-"""Load an explicitly configured OpenAI secret without logging credential values."""
+"""Load provider-specific secrets without logging or crossing credential boundaries."""
 
 from __future__ import annotations
 
@@ -8,9 +8,17 @@ import subprocess
 
 
 def openai_api_key() -> str | None:
-    if os.environ.get("OPENAI_API_KEY"):
-        return os.environ["OPENAI_API_KEY"]
-    secret_id = os.environ.get("OPENAI_SECRET_ID")
+    return _api_key("OPENAI")
+
+
+def novita_api_key() -> str | None:
+    return _api_key("NOVITA")
+
+
+def _api_key(provider: str) -> str | None:
+    if os.environ.get(f"{provider}_API_KEY", "").strip():
+        return os.environ[f"{provider}_API_KEY"].strip()
+    secret_id = os.environ.get(f"{provider}_SECRET_ID")
     if not secret_id:
         return None
     command = [
@@ -32,9 +40,10 @@ def openai_api_key() -> str | None:
             value = json.loads(secret)
         except json.JSONDecodeError:
             value = secret
-        key = value.get("OPENAI_API_KEY") if isinstance(value, dict) else value
+        field = os.environ.get(f"{provider}_SECRET_FIELD", f"{provider}_API_KEY")
+        key = value.get(field) if isinstance(value, dict) else value
         if not isinstance(key, str) or not key.strip():
             raise ValueError("Missing credential")
         return key.strip()
     except Exception:
-        raise RuntimeError("Unable to load the configured OpenAI secret from AWS.") from None
+        raise RuntimeError(f"Unable to load the configured {provider} secret from AWS.") from None

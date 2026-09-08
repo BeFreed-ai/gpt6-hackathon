@@ -84,8 +84,22 @@ AGENT_SEEDS = [
 
 
 class World:
-    def __init__(self, store: EventStore, agent_count: int = 12, seed: int = 17) -> None:
+    def __init__(
+        self,
+        store: EventStore,
+        agent_count: int = 12,
+        seed: int = 17,
+        scenario: str = "prototype",
+    ) -> None:
+        if scenario not in {"prototype", "sf"}:
+            raise ValueError("Unknown scenario; choose sf or prototype")
+        if not 1 <= agent_count <= 500:
+            raise ValueError("Agent count must be between 1 and 500")
         self.store = store
+        self.scenario = scenario
+        self.population_report: dict[str, Any] | None = None
+        self.employer_catalog: list[dict[str, Any]] = []
+        self.districts = DISTRICTS
         self.run_id = uuid.uuid4().hex[:10]
         self.random = random.Random(seed)
         self.time = 0.0
@@ -110,10 +124,19 @@ class World:
         self.lifecycle = Lifecycle(self)
         self._create_city()
         self.urban.seed()
-        self._create_agents(agent_count)
+        if scenario == "sf":
+            from app.sf_economy import apply_sf_economy
+            from app.sf_scenario import seed_sf_scenario
+
+            seed_sf_scenario(self, agent_count, seed)
+            apply_sf_economy(self, seed)
+        else:
+            self._create_agents(agent_count)
         self.emit(
             "broadcast",
-            "Good morning, Throng City. Fog is clearing over the eastern hills.",
+            "Good morning, SoMa and Mission. This is neighborhood public radio."
+            if scenario == "sf"
+            else "Good morning, Throng City. Fog is clearing over the eastern hills.",
             position=Vec2(x=1125, y=535),
             payload={"station": "KTHR Public Radio"},
             radius=1600,
@@ -260,6 +283,15 @@ class World:
                     continue
                 agent.stimulus_version += 1
                 agent.last_reaction = {
+                    "earthquake": "Ground shaking!",
+                    "facility_damage": "Damage nearby",
+                    "injury": "Injured!" if agent_id in event.target_ids else "Someone is hurt",
+                    "stepped_in_waste": (
+                        "Stepped in waste!"
+                        if agent_id in event.target_ids
+                        else "Saw someone step in waste"
+                    ),
+                    "schedule_reminder": "Checking the time",
                     "broadcast": "Heard a broadcast",
                     "speech": "Heard a neighbor",
                     "lightning": "Startled by lightning",
@@ -272,7 +304,15 @@ class World:
                 }.get(event.type, "Noticed something")
                 agent.reaction_until = self.time + 8
                 if agent.activity and event.type not in {
-                    "attack", "lightning", "death", "player_kill", "discovery"
+                    "attack",
+                    "lightning",
+                    "death",
+                    "player_kill",
+                    "discovery",
+                    "earthquake",
+                    "facility_damage",
+                    "injury",
+                    "stepped_in_waste",
                 }:
                     # Remember speech immediately, finish the short physical task first.
                     continue
@@ -304,6 +344,10 @@ class World:
         self._update_city_services()
         self._grow_food()
         self._maybe_city_event()
+        if self.scenario == "sf":
+            from app.routines import update_reminders
+
+            update_reminders(self)
 
     def _grow_food(self) -> None:
         if self.time < self.next_food_growth:
@@ -326,11 +370,14 @@ class World:
                 )
 
     def _update_day_cycle(self) -> None:
-        day = int(self.time // DAY_LENGTH)
+        day = int(self.time // self.day_length)
         if day <= self.last_day_charged:
             return
         self.last_day_charged = day
         self.urban.new_day()
+        if getattr(self, "sf_economy", None):
+            self.sf_economy.new_day()
+            return
         for agent in self.agents.values():
             if not agent.alive:
                 continue
@@ -412,6 +459,8 @@ class World:
                 agent.speech = None
 
     def _advance_movement(self, agent: AgentState, delta: float) -> None:
+        if self.time < agent.relief_until:
+            return
         pending = agent.pending_intent
         if pending and pending.target_id:
             other = (
@@ -423,7 +472,8 @@ class World:
             if other is None or (isinstance(other, AgentState) and not other.alive):
                 self._fail_action(agent, pending, "The target is no longer available.")
                 return
-            agent.action_target = other.position.model_copy()
+            entrance = getattr(other, "metadata", {}).get("entrance")
+            agent.action_target = Vec2(**entrance) if entrance else other.position.model_copy()
         if agent.action_target and self.time - agent.action_started_at > 90:
             self._fail_action(
                 agent,
@@ -438,7 +488,15 @@ class World:
         dy = target.y - agent.position.y
         distance = math.hypot(dx, dy)
         arrival_range = 30 if pending else 5
-        ignores_end = bool(pending and pending.action in {ActionType.BUILD, ActionType.DEMOLISH})
+        ignores_end = bool(
+            pending
+            and (
+                pending.action in {ActionType.BUILD, ActionType.DEMOLISH}
+                or pending.action == ActionType.TALK
+                and pending.terms
+                and pending.terms.civic_action
+            )
+        )
         if distance <= arrival_range and self.terrain.line_clear(
             agent.position, target, ignores_end
         ):
@@ -498,7 +556,24 @@ class World:
         agent.position = next_position
 
     def _handle_sanitation(self, agent: AgentState) -> None:
-        if agent.bladder >= 99:
+        if not agent.alive:
+            return
+        if agent.relief_until and self.time >= agent.relief_until:
+            agent.relief_until = 0
+            if agent.current_action == "relieving themselves":
+                agent.current_action = "observing"
+        using_toilet = agent.activity and agent.activity.action == ActionType.USE_TOILET
+        if agent.bladder >= 99 and not using_toilet and self.time >= agent.relief_until:
+            self.urban.cancel(agent)
+            agent.action_target = None
+            agent.pending_intent = None
+            agent.route.clear()
+            agent.route_goal = None
+            agent.stimulus_version += 1
+            # Physical relief takes 2.4 simulated seconds; subsequent decisions remain autonomous.
+            agent.relief_until = self.time + 2.4
+            agent.next_think_at = agent.relief_until + 0.2
+            agent.current_action = "relieving themselves"
             agent.bladder = 8
             waste = self._add_object(
                 "waste",
@@ -507,7 +582,7 @@ class World:
                 agent.position.y + self.random.uniform(-10, 10),
                 16,
                 13,
-                metadata={"created_at": self.time},
+                metadata={"created_at": self.time, "created_by": agent.id},
             )
             agent.stress = min(100, agent.stress + 9)
             self.emit(
@@ -515,10 +590,14 @@ class World:
                 f"{agent.name} could not reach a restroom in time.",
                 actor_id=agent.id,
                 position=waste.position,
+                payload={"object_id": waste.id, "duration_seconds": 2.4},
                 radius=85,
             )
         for item in self.objects.values():
             if item.kind != "waste":
+                continue
+            # Creation is not a footstep. Others may still step in the fresh hazard.
+            if item.metadata.get("created_by") == agent.id and self.time - float(item.metadata.get("created_at", -100)) < 3:
                 continue
             last_step = float(item.metadata.get(f"step_{agent.id}", -100))
             if self.time - last_step < 25:
@@ -530,8 +609,9 @@ class World:
                 self.emit(
                     "stepped_in_waste",
                     f"{agent.name} stepped in street waste and recoiled in disgust.",
-                    actor_id=agent.id,
+                    target_ids=[agent.id],
                     position=agent.position,
+                    payload={"object_id": item.id},
                     radius=75,
                 )
 
@@ -552,6 +632,9 @@ class World:
             )
 
     def _maybe_city_event(self) -> None:
+        if self.scenario == "sf":
+            # Prototype shocks are scripted fiction, not calibrated SF event rates.
+            return
         if self.time < self.next_city_event:
             return
         self.next_city_event = self.time + self.random.uniform(38, 62)
@@ -602,6 +685,9 @@ class World:
             )
 
     def context_for(self, agent: AgentState) -> dict[str, Any]:
+        from app.life import life_context, select_memory_context
+        from app.routines import schedule_context
+
         sight = 0.58 if self.weather == "fog" else 1.0
         self.lifecycle.observe_remains(agent, sight)
         nearby_objects = []
@@ -639,22 +725,30 @@ class World:
         workplace = self.objects.get(agent.workplace_id or "")
         return {
             "world_time": round(self.time, 1),
+            "scenario": self.scenario,
+            "personal_background": agent.background.model_dump() if agent.background else None,
             "time_of_day": self.time_of_day,
+            "personal_schedule": schedule_context(self, agent),
             "weather": self.weather,
             "terrain": {
                 "cell_size": 20,
                 "nearby_tiles": self.terrain.observe(agent, 380 * sight),
                 "building_costs": BUILD_COSTS,
                 "nearby_buildable_tiles": self.terrain.build_sites(agent),
+                "civic": self.terrain.civic_for(agent),
             },
             "nearby_objects": nearby_objects[:24],
             "nearby_agents": nearby_agents[:12],
-            "recent_memories": [memory.model_dump(mode="json") for memory in agent.memories],
+            **select_memory_context(agent),
+            "life": life_context(agent),
+            "personal_economy": self.sf_economy.context_for(agent)
+            if getattr(self, "sf_economy", None)
+            else None,
             "new_events": [
                 memory.model_dump(mode="json")
                 for memory in agent.memories
                 if memory.id in agent.inbox
-            ],
+            ][-40:],
             "position": agent.position.model_dump(),
             "inventory": [self.urban.carried[key].model_dump() for key in agent.inventory],
             "economy": self.economy.context_for(agent),
@@ -662,8 +756,33 @@ class World:
             "known_places": list(agent.known_places.values()),
             "last_action_result": agent.last_action_result,
             "known_workplace": workplace.position.model_dump() if workplace else None,
+            "current_workplace": (
+                {"id": workplace.id, "name": workplace.name} if workplace else None
+            ),
             "legal_actions": [item.value for item in ActionType],
             "action_help": {
+                "disaster_response": (
+                    "Earthquakes interrupt activities. Choose your own response using local "
+                    "observations: MOVE to an observed safe place, HELP an injured neighbor, "
+                    "REST at an open clinic, REPAIR a damaged facility, TALK/SHOUT to coordinate, "
+                    "or resume your own project. REPAIR takes 12 seconds and restores 30 points "
+                    "of structural integrity; collapsed buildings need repeated work. Services "
+                    "reopen only at 100. This simplified repair uses no materials. Dead citizens "
+                    "cannot be revived. You do not know remote damage until told or observed."
+                ),
+                "civic_talk": (
+                    "To record civic consent/petition/endorsement/dispute, choose talk with "
+                    "terms.civic_action grant_consent/petition/endorse/dispute, destination at an "
+                    "observed tile, target_id null, message explaining the request, and "
+                    "terms.grantee_id for owner consent. Public tile removal needs the local "
+                    "scenario quorum; a dispute alone grants no permission. This is an explicit "
+                    "recording action, not arbitrary conversation text changing permissions."
+                ),
+                "sf_livelihood": (
+                    "REST at a known clinic consumes care supply and provides medical help. "
+                    "Assigned baseline jobs pay for at most two completed shifts per budget day. "
+                    "Read personal_economy for your rent, remaining shifts, benefits and budget."
+                ),
                 "address_player": (
                     "message required; speak toward whoever may be outside this world. "
                     "The observer receives it; nearby citizens can hear it, distant ones cannot. "
@@ -766,6 +885,23 @@ class World:
         if intent.terms and intent.terms.company_id and intent.terms.company_id not in known_ids:
             self._fail_action(agent, intent, "That company is not known from your own experience.")
             return
+        if intent.terms and intent.terms.grantee_id and intent.terms.grantee_id not in known_ids:
+            self._fail_action(agent, intent, "That citizen is not known from your experience.")
+            return
+        from app.life import apply_life_update
+
+        try:
+            for memory in apply_life_update(agent, decision.life_update, self.time):
+                self.store.append_memory(agent.id, memory)
+        except ValueError:
+            self.emit(
+                "life_update_rejected",
+                "My plan update was rejected: use valid personal memory and project IDs.",
+                actor_id=agent.id,
+                position=agent.position,
+                radius=0,
+                payload={"private": True},
+            )
         if intent.goal and (
             not agent.active_goal or intent.goal.statement != agent.active_goal.statement
         ):
@@ -812,15 +948,17 @@ class World:
     def _approach(
         self, agent: AgentState, intent: ActionIntent, target: Any, radius: float
     ) -> bool:
-        if self._distance_to_position(agent, target.position) <= radius and self.terrain.line_clear(
+        entrance = getattr(target, "metadata", {}).get("entrance")
+        destination = Vec2(**entrance) if entrance else target.position
+        if self._distance_to_position(agent, destination) <= radius and self.terrain.line_clear(
             agent.position,
-            target.position,
+            destination,
             intent.action in {ActionType.BUILD, ActionType.DEMOLISH},
         ):
             return False
         agent.pending_intent = intent.model_copy(deep=True)
         agent.pending_intent.target_id = target.id
-        agent.action_target = target.position.model_copy()
+        agent.action_target = destination.model_copy()
         agent.action_started_at = self.time
         agent.current_action = f"going to {target.name} to {intent.action.value}"
         return True
@@ -855,8 +993,11 @@ class World:
             agent.speech = message
             agent.speech_until = self.time + 10
             event = self.emit(
-                "address_player", f'{agent.name} addressed the sky: "{message}"',
-                actor_id=agent.id, position=agent.position, radius=115,
+                "address_player",
+                f'{agent.name} addressed the sky: "{message}"',
+                actor_id=agent.id,
+                position=agent.position,
+                radius=115,
                 payload={"message": message, "reply_to": intent.reply_to},
             )
             self.player_messages.append(event.model_dump(mode="json"))
@@ -1005,11 +1146,29 @@ class World:
                 position=position,
                 radius=180,
             )
+        elif intervention_type == "earthquake" and position:
+            from app.disasters import earthquake
+
+            injured, killed = earthquake(self, position)
+        elif intervention_type == "waste" and position:
+            self._add_object(
+                "waste",
+                "Street Waste",
+                position.x,
+                position.y,
+                16,
+                13,
+                metadata={"created_at": self.time},
+            )
+            self.emit(
+                "waste", "Street waste appeared on the pavement.", position=position, radius=75
+            )
         elif intervention_type == "lightning" and position:
             event = self.emit(
                 "lightning",
                 "A bolt of lightning struck from the sky without warning.",
-                position=position, radius=230,
+                position=position,
+                radius=230,
             )
             for agent in self.agents.values():
                 if not agent.alive:
@@ -1021,7 +1180,9 @@ class World:
                 agent.stress = min(100, agent.stress + 38)
                 if agent.health <= 0:
                     self.lifecycle.kill(
-                        agent, "lightning", f"{agent.name} was killed by the lightning strike.",
+                        agent,
+                        "lightning",
+                        f"{agent.name} was killed by the lightning strike.",
                         event.id,
                     )
                     killed.append(agent.id)
@@ -1032,7 +1193,8 @@ class World:
             if not agent or not agent.alive:
                 raise ValueError("Choose a living citizen to kill.")
             self.lifecycle.kill(
-                agent, "player_kill",
+                agent,
+                "player_kill",
                 f"A narrow beam descended from the sky and killed {agent.name}.",
             )
             killed.append(agent.id)
@@ -1063,7 +1225,7 @@ class World:
             self.emit("weather", text, position=Vec2(x=700, y=400), radius=1600)
         else:
             raise ValueError("Unknown intervention or missing position.")
-        events = [e for e in self.events if int(e.id.rsplit('_', 1)[1]) > before]
+        events = [e for e in self.events if int(e.id.rsplit("_", 1)[1]) > before]
         receipt = {
             "accepted": True,
             "event_id": events[0].id,
@@ -1073,10 +1235,14 @@ class World:
             "injured": injured,
             "paused": self.paused,
         }
-        self.interventions.append({
-            **receipt, "type": intervention_type, "world_time": self.time,
-            "followups": [],
-        })
+        self.interventions.append(
+            {
+                **receipt,
+                "type": intervention_type,
+                "world_time": self.time,
+                "followups": [],
+            }
+        )
         return receipt
 
     def record_followup(self, agent: AgentState, decision: AgentDecision, consumed: set[str]):
@@ -1085,12 +1251,16 @@ class World:
         read_events = {memories[key] for key in consumed if key in memories}
         for intervention in self.interventions:
             if read_events.intersection(intervention["event_ids"]):
-                intervention["followups"].append({
-                    "agent_id": agent.id, "world_time": self.time,
-                    "action": decision.intent.action.value,
-                    "reply_to_event_id": memories.get(decision.intent.reply_to),
-                    "result": agent.last_action_result,
-                })
+                intervention["followups"].append(
+                    {
+                        "agent_id": agent.id,
+                        "world_time": self.time,
+                        "action": decision.intent.action.value,
+                        "source": decision.source,
+                        "reply_to_event_id": memories.get(decision.intent.reply_to),
+                        "result": agent.last_action_result,
+                    }
+                )
 
     @property
     def time_of_day(self) -> str:
@@ -1108,11 +1278,12 @@ class World:
                 "height": WORLD_HEIGHT,
                 "time": round(self.time, 1),
                 "time_of_day": self.time_of_day,
-                "day_length": DAY_LENGTH,
+                "day_length": self.day_length,
                 "weather": self.weather,
                 "paused": self.paused,
                 "speed": self.speed,
-                "districts": DISTRICTS,
+                "districts": self.districts,
+                "scenario": self.scenario,
             },
             "stats": {
                 "population": living,
@@ -1123,6 +1294,11 @@ class World:
                 "capital_raised": round(sum(c.raised for c in self.economy.companies.values()), 2),
                 "brain_mode": brain_mode,
                 "brain_error": last_error,
+                "llm_decisions": sum(
+                    a.decision_count
+                    for a in self.agents.values()
+                    if a.last_decision_source in {"astra", "novita"}
+                ),
                 "astra_decisions": sum(
                     a.decision_count
                     for a in self.agents.values()
@@ -1140,6 +1316,18 @@ class World:
                 "city_balance": round(self.economy.city_balance, 2),
             },
             "terrain": self.terrain.snapshot(),
+            "population": self.population_report,
+            "calibration": self.sf_economy.report() if getattr(self, "sf_economy", None) else None,
+            "employers": [
+                {
+                    **employer,
+                    "simulated_workers": sum(
+                        a.alive and a.workplace_id == employer.get("object_id")
+                        for a in self.agents.values()
+                    ),
+                }
+                for employer in self.employer_catalog
+            ],
             "interventions": list(self.interventions),
             "player_messages": list(self.player_messages),
             "events": [event.model_dump(mode="json") for event in list(self.events)[-35:]],
@@ -1154,6 +1342,13 @@ class World:
             self.urban.carried[key].model_dump() for key in agent.inventory
         ]
         detail["economy"] = self.economy.context_for(agent)
+        detail["personal_economy"] = (
+            self.sf_economy.context_for(agent) if getattr(self, "sf_economy", None) else None
+        )
+        from app.life import life_context
+
+        detail["life"] = life_context(agent)
+        detail["memory_total"] = len(agent.memories)
         detail["memories"] = [memory.model_dump(mode="json") for memory in agent.memories[-80:]]
         detail["home"] = self.objects[agent.home_id].name if agent.home_id in self.objects else None
         detail["workplace"] = (
@@ -1180,6 +1375,7 @@ class World:
             "speech": agent.speech,
             "is_thinking": agent.is_thinking,
             "alive": agent.alive,
+            "death_cause": agent.death_cause if not agent.alive else None,
             "has_home": agent.home_id is not None,
             "reaction": agent.last_reaction if agent.reaction_until > self.time else "",
             "decision_source": agent.last_decision_source,

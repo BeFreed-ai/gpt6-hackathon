@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from enum import StrEnum
-from typing import Any
+from typing import Annotated, Any, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class SourceType(StrEnum):
@@ -36,6 +36,7 @@ class ActionType(StrEnum):
     BUY = "buy"
     COOK = "cook"
     CLEAN = "clean"
+    REPAIR = "repair"
     RENT_HOME = "rent_home"
     OFFER_HOUSING = "offer_housing"
     FOUND_COMPANY = "found_company"
@@ -105,6 +106,8 @@ class ActionTerms(BaseModel):
     price: float | None = Field(default=None, gt=0, le=1000, allow_inf_nan=False)
     item_id: str | None = None
     tile: str | None = None
+    civic_action: Literal["grant_consent", "petition", "endorse", "dispute"] | None = None
+    grantee_id: str | None = None
 
 
 class ActionIntent(BaseModel):
@@ -128,17 +131,118 @@ class Activity(BaseModel):
     inputs: list[str] = Field(default_factory=list)
 
 
+LifeID = Annotated[str, Field(min_length=1, max_length=48, pattern=r"^[a-zA-Z0-9_-]+$")]
+LifeText = Annotated[str, Field(min_length=1, max_length=240)]
+EvidenceIDs = Annotated[list[LifeID], Field(max_length=8)]
+
+
+class LifeRecord(BaseModel):
+    """Explicit intentions and evidence, never hidden model reasoning."""
+
+    model_config = ConfigDict(extra="forbid")
+
+
+class LifeDirection(LifeRecord):
+    statement: LifeText
+    evidence_memory_ids: EvidenceIDs = Field(default_factory=list)
+
+
+class MilestonePlan(LifeRecord):
+    id: LifeID
+    statement: LifeText
+
+
+class LifeMilestone(MilestonePlan):
+    progress: float = Field(default=0, ge=0, le=1, allow_inf_nan=False)
+    evidence_memory_ids: EvidenceIDs = Field(default_factory=list)
+
+
+class ProjectCreate(LifeRecord):
+    id: LifeID
+    title: Annotated[str, Field(min_length=1, max_length=80)]
+    goal: LifeText
+    next_step: LifeText
+    milestones: list[MilestonePlan] = Field(min_length=1, max_length=6)
+    commitment: float = Field(ge=0, le=1, allow_inf_nan=False)
+    evidence_memory_ids: EvidenceIDs = Field(min_length=1)
+
+
+class ProjectChange(LifeRecord):
+    project_id: LifeID
+    operation: Literal["advance", "revise", "suspend", "resume", "finish", "abandon"]
+    note: LifeText
+    evidence_memory_ids: EvidenceIDs = Field(min_length=1)
+    next_step: LifeText | None = None
+    milestone_id: LifeID | None = None
+    progress: float | None = Field(default=None, ge=0, le=1, allow_inf_nan=False)
+    commitment: float | None = Field(default=None, ge=0, le=1, allow_inf_nan=False)
+
+
+class LifeProject(LifeRecord):
+    id: LifeID
+    title: Annotated[str, Field(min_length=1, max_length=80)]
+    goal: LifeText
+    next_step: LifeText
+    milestones: list[LifeMilestone] = Field(min_length=1, max_length=6)
+    status: Literal["active", "suspended", "finished", "abandoned"] = "active"
+    commitment: float = Field(ge=0, le=1, allow_inf_nan=False)
+    evidence_memory_ids: EvidenceIDs
+    last_note: str = ""
+    created_at: float
+    updated_at: float
+
+
+class MemoryRecall(LifeRecord):
+    query: Annotated[str, Field(max_length=120)] = ""
+    memory_ids: EvidenceIDs = Field(default_factory=list)
+
+
+class LifeUpdate(LifeRecord):
+    direction: LifeDirection | None = None
+    create_projects: list[ProjectCreate] = Field(default_factory=list, max_length=1)
+    project_changes: list[ProjectChange] = Field(default_factory=list, max_length=2)
+    recall: MemoryRecall | None = None
+
+
+class LifeState(LifeRecord):
+    direction: LifeDirection | None = None
+    projects: list[LifeProject] = Field(default_factory=list, max_length=24)
+    recall: MemoryRecall | None = None
+    revision: int = 0
+
+
 class AgentDecision(BaseModel):
     intent: ActionIntent
     expressed_values: list[str] = Field(default_factory=list, max_length=4)
     relationship_updates: dict[str, float] = Field(default_factory=dict)
     source: str = "unknown"
+    life_update: LifeUpdate | None = None
+    provider_usage: dict[str, Any] = Field(default_factory=dict)
+    provider_response_id: str | None = None
+
+
+class AgentBackground(BaseModel):
+    """Private synthetic starting history, not a personality or a mandated life plan."""
+
+    age: int = Field(ge=18, le=110)
+    neighborhood: str
+    housing_status: str
+    employment_status: str
+    occupation_sector: str | None = None
+    occupation_group: str | None = None
+    workplace_assignment_basis: str | None = None
+    biography: list[str] = Field(default_factory=list)
+    employer_name: str | None = None
+    synthetic: bool = True
+    public_figure: dict[str, Any] | None = None
+    person_reference: dict[str, Any] | None = None
 
 
 class AgentState(BaseModel):
     id: str
     name: str
     position: Vec2
+    background: AgentBackground | None = None
     home_id: str | None = None
     workplace_id: str | None = None
     credits: float = 10.0
@@ -150,12 +254,14 @@ class AgentState(BaseModel):
     traits: dict[str, float] = Field(default_factory=dict)
     values: list[str] = Field(default_factory=list)
     active_goal: Goal | None = None
+    life: LifeState = Field(default_factory=LifeState)
     current_action: str = "idle"
     action_target: Vec2 | None = None
     pending_intent: ActionIntent | None = None
     action_started_at: float = 0.0
     inbox: list[str] = Field(default_factory=list)
     stimulus_version: int = 0
+    routine_notices: dict[str, str] = Field(default_factory=dict)
     last_decision_source: str = "none"
     decision_count: int = 0
     last_reaction: str = ""
@@ -166,6 +272,7 @@ class AgentState(BaseModel):
     activity: Activity | None = None
     warmth: float = 85.0
     cleanliness: float = 90.0
+    relief_until: float = 0.0
     wearing_coat: bool = False
     route_until: float = 0.0
     known_terrain: dict[str, str] = Field(default_factory=dict)

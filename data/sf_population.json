@@ -1,0 +1,567 @@
+{
+  "schema_version": 1,
+  "mission_bay_extension": {
+    "query_url": "https://data.sfgov.org/resource/4qbq-hvtt.json?geography_name=Mission%20Bay&end_year=2023&%24limit=1000",
+    "source_rows": [
+      {
+        "geography_name": "Mission Bay",
+        "demographic_category": "all",
+        "demographic_category_label": "all demographics",
+        "estimate": 16710,
+        "moe": 1701.9994124558327,
+        "acs_table": "B01001",
+        "acs_code": "001",
+        "data_as_of": "2025-01-02T15:25:57.322"
+      },
+      {
+        "geography_name": "Mission Bay",
+        "demographic_category": "age",
+        "demographic_category_label": "Under 5 years",
+        "estimate": 1460,
+        "moe": 467.6622713026998,
+        "acs_table": "B06001",
+        "acs_code": "002",
+        "data_as_of": "2025-01-02T15:25:32.923"
+      },
+      {
+        "geography_name": "Mission Bay",
+        "demographic_category": "age",
+        "demographic_category_label": "5 to 17 years",
+        "estimate": 1037,
+        "moe": 382.8002089863588,
+        "acs_table": "B06001",
+        "acs_code": "003",
+        "data_as_of": "2025-01-02T15:25:35.361"
+      },
+      {
+        "geography_name": "Mission Bay",
+        "demographic_category": "age",
+        "demographic_category_label": "18 to 24 years",
+        "estimate": 1203,
+        "moe": 462.78072561419407,
+        "acs_table": "B06001",
+        "acs_code": "004",
+        "data_as_of": "2025-01-02T15:25:37.631"
+      },
+      {
+        "geography_name": "Mission Bay",
+        "demographic_category": "age",
+        "demographic_category_label": "25 to 34 years",
+        "estimate": 5324,
+        "moe": 745.2717625135142,
+        "acs_table": "B06001",
+        "acs_code": "005",
+        "data_as_of": "2025-01-02T15:25:46.938"
+      },
+      {
+        "geography_name": "Mission Bay",
+        "demographic_category": "age",
+        "demographic_category_label": "35 to 44 years",
+        "estimate": 3542,
+        "moe": 627.9307286636002,
+        "acs_table": "B06001",
+        "acs_code": "006",
+        "data_as_of": "2025-01-02T15:25:50.029"
+      },
+      {
+        "geography_name": "Mission Bay",
+        "demographic_category": "age",
+        "demographic_category_label": "45 to 54 years",
+        "estimate": 1827,
+        "moe": 538.6928623993454,
+        "acs_table": "B06001",
+        "acs_code": "007",
+        "data_as_of": "2025-01-02T15:25:52.489"
+      },
+      {
+        "geography_name": "Mission Bay",
+        "demographic_category": "age",
+        "demographic_category_label": "55 to 59 years",
+        "estimate": 370,
+        "moe": 181.3063705444461,
+        "acs_table": "B06001",
+        "acs_code": "008",
+        "data_as_of": "2025-01-02T15:25:55.580"
+      },
+      {
+        "geography_name": "Mission Bay",
+        "demographic_category": "age",
+        "demographic_category_label": "60 and 61 years",
+        "estimate": 76,
+        "moe": 78.23042886243178,
+        "acs_table": "B06001",
+        "acs_code": "009",
+        "data_as_of": "2025-01-02T15:26:07.644"
+      },
+      {
+        "geography_name": "Mission Bay",
+        "demographic_category": "age",
+        "demographic_category_label": "62 to 64 years",
+        "estimate": 366,
+        "moe": 208.9138578457638,
+        "acs_table": "B06001",
+        "acs_code": "010",
+        "data_as_of": "2025-01-02T15:26:10.033"
+      },
+      {
+        "geography_name": "Mission Bay",
+        "demographic_category": "age",
+        "demographic_category_label": "65 to 74 years",
+        "estimate": 875,
+        "moe": 343.7819076100428,
+        "acs_table": "B06001",
+        "acs_code": "011",
+        "data_as_of": "2025-01-02T15:26:12.406"
+      },
+      {
+        "geography_name": "Mission Bay",
+        "demographic_category": "age",
+        "demographic_category_label": "75 years and over",
+        "estimate": 630,
+        "moe": 175.82661914511124,
+        "acs_table": "B06001",
+        "acs_code": "012",
+        "data_as_of": "2025-01-02T15:26:14.818"
+      }
+    ],
+    "retrieved_on": "2026-09-08",
+    "employment_row": {
+      "Neighborhood": "Mission Bay",
+      "Labor Force Participation Rate": "0.779848171152519",
+      "Unemployment Rate": "0.015355417529330572",
+      "Managerial Professional": "0.7441886707289551",
+      "Services": "0.05777476867524261",
+      "Sales and Office": "0.14974046490634169",
+      "Natural Resources": "0.005303543218235162",
+      "Production Transport Materials": "0.04299255247122546"
+    }
+  },
+  "title": "Mission and South of Market resident calibration",
+  "retrieved_on": "2026-09-08",
+  "vintage": "2019-2023 ACS 5-year estimates",
+  "period_start": 2019,
+  "period_end": 2023,
+  "source_id": "datasf_4qbq_hvtt",
+  "source_url": "https://data.sfgov.org/d/4qbq-hvtt",
+  "query_url": "https://data.sfgov.org/resource/4qbq-hvtt.json?%24where=geography%3D%27neighborhood%27+AND+geography_name+in+%28%27Mission%27%2C%27South+of+Market%27%29+AND+end_year%3D%272023%27+AND+demographic_category+in+%28%27age%27%2C%27all%27%29&%24select=geography_name%2Cdemographic_category%2Cdemographic_category_label%2Cestimate%2Cmoe%2Cacs_table%2Cacs_code%2Cdata_as_of&%24order=geography_name%2Cacs_code&%24limit=100",
+  "geography": {
+    "type": "San Francisco Analysis Neighborhoods",
+    "neighborhoods": {
+      "mission": "Mission",
+      "soma": "South of Market"
+    },
+    "boundary_reference_url": "https://data.sfgov.org/d/sevw-6tgi",
+    "notes": "Use DataSF's published neighborhood aggregates. South of Market excludes the separately named Mission Bay and Financial District/South Beach; Mission is not Outer Mission. These are statistical analysis neighborhoods, not the simulation map footprint or adopted plan areas."
+  },
+  "latest_accessible_note": "2019-2023 is the latest neighborhood age and total vintage exposed in this DataSF dataset at retrieval. Census has released 2020-2024 ACS, but it is not substituted without a verified tract aggregation. These estimates are not current 2026 counts.",
+  "citywide_context": {
+    "geography": "San Francisco County, California",
+    "vintage": "2019-2023 ACS 5-year estimates",
+    "population_estimate": 836321,
+    "source_id": "datasf_4qbq_hvtt",
+    "acs_variable": "B01001_001E",
+    "used_for_neighborhood_calibration": false
+  },
+  "current_citywide_context": {
+    "geography": "San Francisco County, California",
+    "source_url": "https://dof.ca.gov/media/docs/forecasting/Demographics/estimates/PressRelease_July2025.pdf",
+    "landing_url": "https://dof.ca.gov/forecasting/demographics/estimates/e-2/",
+    "publisher": "California Department of Finance",
+    "publication_date": "2026-02",
+    "as_of": "2025-07-01",
+    "retrieved_on": "2026-09-08",
+    "population_estimate": 842457,
+    "status": "preliminary state estimate, E-2; not a 2026 count or Census ACS estimate",
+    "used_for_neighborhood_calibration": false
+  },
+  "adult_age_bands": [
+    {
+      "label": "18-34",
+      "min_age": 18,
+      "max_age": 34,
+      "source_codes": [
+        "004",
+        "005"
+      ]
+    },
+    {
+      "label": "35-54",
+      "min_age": 35,
+      "max_age": 54,
+      "source_codes": [
+        "006",
+        "007"
+      ]
+    },
+    {
+      "label": "55-64",
+      "min_age": 55,
+      "max_age": 64,
+      "source_codes": [
+        "008",
+        "009",
+        "010"
+      ]
+    },
+    {
+      "label": "65+",
+      "min_age": 65,
+      "max_age": null,
+      "source_codes": [
+        "011",
+        "012"
+      ]
+    }
+  ],
+  "source_age_ranges": {
+    "002": [
+      0,
+      4
+    ],
+    "003": [
+      5,
+      17
+    ],
+    "004": [
+      18,
+      24
+    ],
+    "005": [
+      25,
+      34
+    ],
+    "006": [
+      35,
+      44
+    ],
+    "007": [
+      45,
+      54
+    ],
+    "008": [
+      55,
+      59
+    ],
+    "009": [
+      60,
+      61
+    ],
+    "010": [
+      62,
+      64
+    ],
+    "011": [
+      65,
+      74
+    ],
+    "012": [
+      75,
+      null
+    ]
+  },
+  "source_rows": [
+    {
+      "geography_name": "Mission",
+      "demographic_category": "all",
+      "demographic_category_label": "all demographics",
+      "estimate": 54431,
+      "moe": 2367.0378112738294,
+      "acs_table": "B01001",
+      "acs_code": "001",
+      "data_as_of": "2025-01-02T15:25:57.322"
+    },
+    {
+      "geography_name": "Mission",
+      "demographic_category": "age",
+      "demographic_category_label": "Under 5 years",
+      "estimate": 1873,
+      "moe": 367.8736196032545,
+      "acs_table": "B06001",
+      "acs_code": "002",
+      "data_as_of": "2025-01-02T15:25:32.923"
+    },
+    {
+      "geography_name": "Mission",
+      "demographic_category": "age",
+      "demographic_category_label": "5 to 17 years",
+      "estimate": 4914,
+      "moe": 687.3638046915185,
+      "acs_table": "B06001",
+      "acs_code": "003",
+      "data_as_of": "2025-01-02T15:25:35.361"
+    },
+    {
+      "geography_name": "Mission",
+      "demographic_category": "age",
+      "demographic_category_label": "18 to 24 years",
+      "estimate": 3008,
+      "moe": 486.94044810428306,
+      "acs_table": "B06001",
+      "acs_code": "004",
+      "data_as_of": "2025-01-02T15:25:37.631"
+    },
+    {
+      "geography_name": "Mission",
+      "demographic_category": "age",
+      "demographic_category_label": "25 to 34 years",
+      "estimate": 13008,
+      "moe": 1054.9402826700666,
+      "acs_table": "B06001",
+      "acs_code": "005",
+      "data_as_of": "2025-01-02T15:25:46.938"
+    },
+    {
+      "geography_name": "Mission",
+      "demographic_category": "age",
+      "demographic_category_label": "35 to 44 years",
+      "estimate": 11856,
+      "moe": 1102.947414884318,
+      "acs_table": "B06001",
+      "acs_code": "006",
+      "data_as_of": "2025-01-02T15:25:50.029"
+    },
+    {
+      "geography_name": "Mission",
+      "demographic_category": "age",
+      "demographic_category_label": "45 to 54 years",
+      "estimate": 7569,
+      "moe": 835.6249158563907,
+      "acs_table": "B06001",
+      "acs_code": "007",
+      "data_as_of": "2025-01-02T15:25:52.489"
+    },
+    {
+      "geography_name": "Mission",
+      "demographic_category": "age",
+      "demographic_category_label": "55 to 59 years",
+      "estimate": 2768,
+      "moe": 435.9827978257858,
+      "acs_table": "B06001",
+      "acs_code": "008",
+      "data_as_of": "2025-01-02T15:25:55.580"
+    },
+    {
+      "geography_name": "Mission",
+      "demographic_category": "age",
+      "demographic_category_label": "60 and 61 years",
+      "estimate": 1158,
+      "moe": 261.8472837361503,
+      "acs_table": "B06001",
+      "acs_code": "009",
+      "data_as_of": "2025-01-02T15:26:07.644"
+    },
+    {
+      "geography_name": "Mission",
+      "demographic_category": "age",
+      "demographic_category_label": "62 to 64 years",
+      "estimate": 1427,
+      "moe": 311.64242329952447,
+      "acs_table": "B06001",
+      "acs_code": "010",
+      "data_as_of": "2025-01-02T15:26:10.033"
+    },
+    {
+      "geography_name": "Mission",
+      "demographic_category": "age",
+      "demographic_category_label": "65 to 74 years",
+      "estimate": 3969,
+      "moe": 514.879597575977,
+      "acs_table": "B06001",
+      "acs_code": "011",
+      "data_as_of": "2025-01-02T15:26:12.406"
+    },
+    {
+      "geography_name": "Mission",
+      "demographic_category": "age",
+      "demographic_category_label": "75 years and over",
+      "estimate": 2881,
+      "moe": 519.3842508201418,
+      "acs_table": "B06001",
+      "acs_code": "012",
+      "data_as_of": "2025-01-02T15:26:14.818"
+    },
+    {
+      "geography_name": "South of Market",
+      "demographic_category": "all",
+      "demographic_category_label": "all demographics",
+      "estimate": 24698,
+      "moe": 1567.1113553286505,
+      "acs_table": "B01001",
+      "acs_code": "001",
+      "data_as_of": "2025-01-02T15:25:57.322"
+    },
+    {
+      "geography_name": "South of Market",
+      "demographic_category": "age",
+      "demographic_category_label": "Under 5 years",
+      "estimate": 729,
+      "moe": 270.737880615181,
+      "acs_table": "B06001",
+      "acs_code": "002",
+      "data_as_of": "2025-01-02T15:25:32.923"
+    },
+    {
+      "geography_name": "South of Market",
+      "demographic_category": "age",
+      "demographic_category_label": "5 to 17 years",
+      "estimate": 1045,
+      "moe": 373.49163310574977,
+      "acs_table": "B06001",
+      "acs_code": "003",
+      "data_as_of": "2025-01-02T15:25:35.361"
+    },
+    {
+      "geography_name": "South of Market",
+      "demographic_category": "age",
+      "demographic_category_label": "18 to 24 years",
+      "estimate": 1723,
+      "moe": 375.1466379963974,
+      "acs_table": "B06001",
+      "acs_code": "004",
+      "data_as_of": "2025-01-02T15:25:37.631"
+    },
+    {
+      "geography_name": "South of Market",
+      "demographic_category": "age",
+      "demographic_category_label": "25 to 34 years",
+      "estimate": 8036,
+      "moe": 1002.8120461980899,
+      "acs_table": "B06001",
+      "acs_code": "005",
+      "data_as_of": "2025-01-02T15:25:46.938"
+    },
+    {
+      "geography_name": "South of Market",
+      "demographic_category": "age",
+      "demographic_category_label": "35 to 44 years",
+      "estimate": 4327,
+      "moe": 715.3901033701823,
+      "acs_table": "B06001",
+      "acs_code": "006",
+      "data_as_of": "2025-01-02T15:25:50.029"
+    },
+    {
+      "geography_name": "South of Market",
+      "demographic_category": "age",
+      "demographic_category_label": "45 to 54 years",
+      "estimate": 2512,
+      "moe": 457.7204386959359,
+      "acs_table": "B06001",
+      "acs_code": "007",
+      "data_as_of": "2025-01-02T15:25:52.489"
+    },
+    {
+      "geography_name": "South of Market",
+      "demographic_category": "age",
+      "demographic_category_label": "55 to 59 years",
+      "estimate": 1170,
+      "moe": 325.4258748163704,
+      "acs_table": "B06001",
+      "acs_code": "008",
+      "data_as_of": "2025-01-02T15:25:55.580"
+    },
+    {
+      "geography_name": "South of Market",
+      "demographic_category": "age",
+      "demographic_category_label": "60 and 61 years",
+      "estimate": 387,
+      "moe": 183.5592547380818,
+      "acs_table": "B06001",
+      "acs_code": "009",
+      "data_as_of": "2025-01-02T15:26:07.644"
+    },
+    {
+      "geography_name": "South of Market",
+      "demographic_category": "age",
+      "demographic_category_label": "62 to 64 years",
+      "estimate": 903,
+      "moe": 296.2363920925314,
+      "acs_table": "B06001",
+      "acs_code": "010",
+      "data_as_of": "2025-01-02T15:26:10.033"
+    },
+    {
+      "geography_name": "South of Market",
+      "demographic_category": "age",
+      "demographic_category_label": "65 to 74 years",
+      "estimate": 2397,
+      "moe": 430.5461647721415,
+      "acs_table": "B06001",
+      "acs_code": "011",
+      "data_as_of": "2025-01-02T15:26:12.406"
+    },
+    {
+      "geography_name": "South of Market",
+      "demographic_category": "age",
+      "demographic_category_label": "75 years and over",
+      "estimate": 1469,
+      "moe": 295.7837047573784,
+      "acs_table": "B06001",
+      "acs_code": "012",
+      "data_as_of": "2025-01-02T15:26:14.818"
+    }
+  ],
+  "economy_calibration": {
+    "file": "sf_economy.json",
+    "profile_field": "economic_profile",
+    "status": "Citywide and metro source levels with explicitly assumed individual spread; does not recalibrate the resident sample or weights",
+    "housing": "Sample households are constructed by apply_sf_economy after map placement, with 1-3 synthetic adult residents per household. They do not reproduce measured household compositions."
+  },
+  "assumptions": {
+    "individual_age": "After stratifying the four broad bands, draw a source sub-band with probabilities proportional to its counts, then an integer age uniformly within it. Ages 75+ use assumed range 75-100; no claim of a measured exact-age distribution.",
+    "background": "All experiences and residence durations are invented scenario facts, independent of demographic identity; no real people or personal records.",
+    "unmeasured_fields": "housing_status is unspecified. No household-tenure marginal is treated as an individual adult's tenure. Employment uses the separately documented older 16+ proxy; occupation_sector means a broad resident occupation group, not an industry.",
+    "employment": "Use older 16+ resident status shares as proxies for current-sample 18+ adults, independently of age within neighborhood. Source Unemployment Rate is B23025_005/B23025_001, not the conventional labor-force unemployment rate. Employed proxy = B23025_002/B23025_001 minus B23025_005/B23025_001; it includes Armed Forces, whose occupations are not measured by C24050. Transfer civilian employed occupation shares to the synthetic employed proxy independently of age; these are scenario assignments, not a measured joint distribution."
+  },
+  "limitations": [
+    "ACS estimates describe a five-year period and carry sampling and nonsampling error; they are not a census of today's residents.",
+    "Reported source margins of error are retained; derived broad-band margins use root-sum-squares as an approximation without covariance, and uncertainty in shares is not propagated.",
+    "Adult-only simulation excludes ages 0-17 and uses the adult resident denominator; it does not represent families or household structure.",
+    "Small samples omit some strata and cannot reproduce the full resident population or support neighborhood behavior inference.",
+    "Weights are descriptive expansion factors for represented strata, not survey inclusion probabilities or instructions to multiply agents or API calls.",
+    "No race, ethnicity, personality, values, violence propensity, goals, or housing distribution is inferred. Age, employment, and occupation combinations are explicit independence assumptions, not observed joint records.",
+    "The simulation geography is a stylized map; official neighborhood totals should not be interpreted as people inside its viewport.",
+    "Employment and occupation use 2016-2020 age16+ proxy marginals with no published margins in the extracted profile, applied to 2019-2023 adult calibration; this mixed-vintage independence model cannot reproduce age-specific retirement, unemployment, or occupational patterns."
+  ],
+  "employment_calibration": {
+    "source_url": "https://raw.githubusercontent.com/sfcpc/san-francisco-neighborhood-profiles/main/output/Neighborhood_profiles_by_geo_2020.csv",
+    "methodology_url": "https://raw.githubusercontent.com/sfcpc/san-francisco-neighborhood-profiles/main/lookup_tables/attribute_lookup.csv",
+    "vintage": "2016-2020 ACS 5-year estimates",
+    "source_population": "Residents age 16 and over (B23025_001); denominator count not published in this extract",
+    "occupation_population": "Civilian employed residents age 16+ (C24050_001)",
+    "occupation_dimension": "Broad occupation groups, not employer industries",
+    "source_moe": null,
+    "source_rows": [
+      {
+        "Neighborhood": "Mission",
+        "Employed Residents": "38922.0",
+        "Labor Force Participation Rate": "0.792694469663312",
+        "Unemployment Rate": "0.0407966157352856",
+        "Managerial Professional": "0.6016134833770105",
+        "Services": "0.15852217255022866",
+        "Sales and Office": "0.1567750886388161",
+        "Natural Resources": "0.02792765017213915",
+        "Production Transport Materials": "0.05516160526180566"
+      },
+      {
+        "Neighborhood": "South of Market",
+        "Employed Residents": "15406.0",
+        "Labor Force Participation Rate": "0.6979664552011818",
+        "Unemployment Rate": "0.02672286434344312",
+        "Managerial Professional": "0.6209269115928859",
+        "Services": "0.1820719200311567",
+        "Sales and Office": "0.13890691938205893",
+        "Natural Resources": "0.007204985070751655",
+        "Production Transport Materials": "0.05088926392314683"
+      }
+    ],
+    "occupation_columns": {
+      "management_business_science_arts": "Managerial Professional",
+      "service": "Services",
+      "sales_office": "Sales and Office",
+      "natural_resources_construction_maintenance": "Natural Resources",
+      "production_transportation_material_moving": "Production Transport Materials"
+    },
+    "assumption": "Use older 16+ resident status shares as proxies for current-sample 18+ adults, independently of age within neighborhood. Source Unemployment Rate is B23025_005/B23025_001, not the conventional labor-force unemployment rate. Employed proxy = B23025_002/B23025_001 minus B23025_005/B23025_001; it includes Armed Forces, whose occupations are not measured by C24050. Transfer civilian employed occupation shares to the synthetic employed proxy independently of age; these are scenario assignments, not a measured joint distribution."
+  }
+}

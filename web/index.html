@@ -13,6 +13,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/static/styles.css" />
+    <link rel="stylesheet" href="/static/pixel-city.css" />
   </head>
   <body>
     <div class="app-shell">
@@ -27,7 +28,7 @@
         <div class="world-readout">
           <div><span class="readout-label">CITY TIME</span><strong id="world-time">00:00</strong></div>
           <div><span class="readout-label">WEATHER</span><strong id="weather">CLEAR</strong></div>
-          <div><span class="readout-label">BRAIN</span><strong id="brain-mode">CONNECTING</strong></div>
+          <div><span class="readout-label">BRAIN</span><strong id="brain-mode">gpt astra</strong></div>
           <span id="connection-dot" class="connection-dot"></span>
         </div>
       </header>
@@ -40,12 +41,15 @@
               <button class="speed-button active" data-speed="1">1×</button>
               <button class="speed-button" data-speed="2">2×</button>
               <button class="speed-button" data-speed="4">4×</button>
+              <button id="save-world" class="speed-button" title="Save this world without resetting it">Save</button>
             </div>
             <div class="tool-divider"></div>
             <div class="intervention-controls">
               <span class="toolbar-label">INTERVENE</span>
               <button class="tool-button" data-tool="food"><span>●</span> Drop food</button>
               <button class="tool-button danger" data-tool="lightning" title="Direct strikes kill. Nearby citizens can be injured."><span>ϟ</span> Lightning</button>
+              <button class="tool-button danger" data-tool="earthquake" title="Citywide shaking. Nearby buildings can collapse and falling debris can kill citizens."><span>≋</span> Earthquake</button>
+              <button class="tool-button" data-tool="waste" title="Place street waste. Citizens must actually step on it to experience it."><span>●</span> Street waste</button>
               <button class="tool-button danger" data-tool="kill" title="Kill one citizen permanently in this run."><span>×</span> Kill citizen</button>
               <button class="tool-button" data-tool="toilet"><span>▣</span> Add restroom</button>
               <button class="tool-button" data-tool="fog"><span>≋</span> Toggle fog</button>
@@ -62,16 +66,31 @@
           </div>
 
           <div id="canvas-wrap" class="canvas-wrap">
+            <div id="geo-map" aria-label="San Francisco street map"></div>
             <canvas id="world-canvas" aria-label="Living pixel city. Click a citizen to inspect, drag to pan, scroll to zoom."></canvas>
+            <div id="map-status" class="map-status" role="status">SoMa · Pixel city</div>
+            <div id="geographic-controls" class="geographic-controls">
+              <button id="map-city" title="See San Francisco and both bridges">SF overview</button>
+              <button id="map-soma" title="Explore SoMa">SoMa</button>
+              <button id="map-mission" title="Explore the Mission District">Mission</button>
+              <button id="map-mission_bay" title="Explore Mission Bay">Mission Bay</button>
+              <button id="map-residents" title="Find the simulated residents">Find citizens</button>
+              <button id="map-waste" title="Zoom to an actual street-waste hazard">Find waste</button>
+              <button id="map-follow" aria-pressed="false" title="Follow the selected citizen">Follow</button>
+              <select id="map-places" aria-label="Find a landmark or personal place"><option value="">Go to a place…</option></select>
+            </div>
             <div class="map-caption"><span id="map-location">SAN FRANCISCO / A SMALL WORLD</span><span id="world-day">DAY 01</span></div>
             <div id="tool-hint" class="tool-hint hidden">Click the city to place this intervention</div>
             <div id="interaction-status" class="interaction-status hidden" role="status"></div>
+            <div id="disaster-status" class="disaster-status hidden" role="status"></div>
             <div class="camera-controls" aria-label="Map camera">
+              <button id="map-closeup" title="Watch the selected citizen up close">Close-up</button>
               <button id="zoom-out" aria-label="Zoom out">−</button>
               <button id="zoom-fit" title="Fit entire city"><span id="zoom-level">100%</span></button>
               <button id="zoom-in" aria-label="Zoom in">+</button>
             </div>
             <div class="map-key">
+              <span id="citizens-visible" title="Citizens are drawn at their actual simulation positions."></span>
               <span><i class="key-agent"></i> Citizen</span>
               <span><i class="key-unhoused"></i> Unhoused</span>
               <span><i class="key-food"></i> Food</span>
@@ -85,6 +104,7 @@
             <article><span>Street hazards</span><strong id="stat-waste">—</strong></article>
             <article><span>Citizen businesses</span><strong id="stat-events">—</strong></article>
           </div>
+          <div id="runtime-status" class="runtime-status" role="status">Connecting to simulation runtime…</div>
         </section>
 
         <aside class="observer-panel">
@@ -93,6 +113,11 @@
             <button class="panel-tab" data-panel="events">CITY FEED</button>
             <button class="panel-tab" data-panel="economy">CITY LIFE</button>
           </div>
+
+          <details id="population-panel" class="population-panel hidden">
+            <summary>Population calibration <span id="population-sample"></span></summary>
+            <div id="population-content" class="population-content"></div>
+          </details>
 
           <section id="citizen-panel" class="panel-content">
             <div id="empty-inspector" class="empty-inspector">
@@ -103,6 +128,7 @@
               <div class="field-notes"><span>FIELD NOTES / 001</span><p>The city keeps living while you watch. Leave an apple. Listen to a conversation. See what happens.</p></div>
             </div>
             <div id="agent-inspector" class="agent-inspector hidden">
+              <div class="personal-map-controls"><button id="visit-home">Show home</button><button id="visit-workplace">Show workplace</button></div>
               <div class="agent-heading">
                 <div id="agent-avatar" class="agent-avatar"><span></span></div>
                 <div>
@@ -120,6 +146,18 @@
                 <div><span>Stress</span><div class="meter danger"><i id="stress-meter"></i></div></div>
               </div>
 
+              <section class="inspector-section" aria-labelledby="peer-heading">
+                <div class="section-title"><span id="peer-heading">With others</span></div>
+                <div id="agent-interactions"></div>
+                <details><summary>Their view of others</summary><dl id="agent-relationships" class="facts"></dl></details>
+              </section>
+
+              <section id="agent-background" class="inspector-section hidden" aria-labelledby="background-heading">
+                <div class="section-title"><span id="background-heading">Biography</span></div>
+                <dl id="agent-background-facts" class="facts"></dl>
+                <div id="agent-biography" class="agent-biography"></div>
+              </section>
+
               <div class="insight-card thought-card">
                 <span class="eyebrow">CURRENT THOUGHT</span>
                 <p id="agent-thought"></p>
@@ -136,6 +174,11 @@
                 <div class="section-title"><span>Expressed values</span><small>Agent-authored</small></div>
                 <div id="agent-values" class="chips"></div>
               </div>
+              <section class="inspector-section" id="life-projects">
+                <div class="section-title"><span>Life direction & projects</span><small>Private / self-authored</small></div>
+                <p id="life-direction"></p>
+                <div id="project-list"></div>
+              </section>
 
               <div class="inspector-section">
                 <div class="section-title"><span>Life context</span></div>
@@ -186,8 +229,8 @@
 
       <footer class="footer-bar">
         <span>OBSERVER MODE</span>
-        <p>Citizens cannot detect inspection. Direct interventions become observable world events.</p>
-        <span id="model-label">MODEL: GPT-6-ASTRA</span>
+        <p>Simulated lives inspired by public biographies; private histories and in-world events are invented.</p>
+        <span id="model-label">MODEL: CONNECTING</span>
       </footer>
     </div>
     <dialog id="broadcast-dialog">

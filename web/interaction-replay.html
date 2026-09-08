@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Citizen interaction lab</title>
+<link rel="stylesheet" href="./interaction-lab.css">
+<header><div><div class="eyebrow">Citizen sandbox</div><h1>Interaction lab</h1><p class="muted">Recorded engine runs · Test-supplied decisions · No live model calls</p></div><div><span class="badge" id="coverage">Loading scenarios…</span> <a href="/">Live city ↗</a></div></header>
+<div class="layout"><aside><input id="search" type="search" placeholder="Find an interaction…" aria-label="Find an interaction"><nav id="cases" aria-label="Interaction scenarios"></nav></aside>
+<main><div class="case-heading"><div><div id="category" class="eyebrow"></div><h2 id="title">Loading…</h2></div><span class="badge" id="frame-title"></span></div>
+<div class="stage"><canvas id="scene" aria-label="Unobstructed close-up of recorded citizen interactions"></canvas><div class="stage-note">Inspection stage · Flat facilities · Actual recorded positions</div><div class="zoom"><button id="zoom-out" aria-label="Zoom out">−</button><button id="zoom-in" aria-label="Zoom in">+</button></div>
+<div class="controls"><button id="play">▶ Play</button><button id="previous" aria-label="Previous step">←</button><button id="next" aria-label="Next step">→</button><button id="replay">Replay step</button><input id="timeline" type="range" min="0" max="1" value="0" aria-label="Recorded step"><span id="status" role="status"></span></div></div>
+<p class="hint" id="hint"></p><div class="details"><section class="card"><h3>What happened</h3><p id="event"></p><ul id="events"></ul><p id="evidence"></p><details><summary>Recorded economy & object changes</summary><pre id="raw"></pre></details></section><section class="card"><h3>People in this scene</h3><div id="people"></div></section></div>
+<footer>This catalog covers every currently supported action, plus selected physical scenarios. It is not an exhaustive list of emergent stories. Playback never sends decisions or changes a saved city.</footer><p id="error" hidden></p></main></div>
+<script type="module" src="./interaction-lab.js"></script>
+</html>

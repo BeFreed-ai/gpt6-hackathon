@@ -1,0 +1,983 @@
+{
+  "schema_version": 1,
+  "verified_on": "2026-09-08",
+  "description": "Curated actual workplace locations, not an employer census or estimate of neighborhood jobs.",
+  "geography": "New SF resident reference area is Mission, South of Market and Mission Bay analysis neighborhoods. Four contextual locations in Financial District/South Beach retain a broad soma simulation label but are explicitly outside that reference area. Geographic classifications use listed points, mostly approximate, not verified parcels.",
+  "allocation_policy": {
+    "status": "scenario_assumption",
+    "named_workplace_share_ceiling": 0.25,
+    "selection": "Uniform among named sites within the matching sector; all headcounts excluded from weighting.",
+    "fallback": "sector_<sector>",
+    "optional_supplied_counts": "allocate_supplied_local_counts accepts explicit resident-worker or inbound-commuter counts with a matching denominator, source and date; catalog citywide or global estimates cannot be used as resident shares. Unknown counts remain null and are rejected as missing inputs, not treated as zero.",
+    "interpretation": "Synthetic assignments; neither employer market share nor evidence of a real individual's employment."
+  },
+  "scenario_allocation_policy": {
+    "id": "sf_industry_reference_sites_v1",
+    "status": "scenario_assumption",
+    "industry_basis": "Hamilton allocation of employed residents using 2025 SF County QCEW workplace jobs as an explicitly imperfect resident-industry proxy; independently assigned from older resident occupation marginals.",
+    "named_basis": "Requested example quotas are reserved first, then at most one synthetic reference seat per other curated named site within its sector; remaining workers use generic sector facilities. This is an illustrative coverage rule, not company market share or measured staffing.",
+    "named_seats_per_site": 1,
+    "requested_example_quotas": {"openai_mission_bay": 3, "anthropic_sf": 1},
+    "quota_basis": "User-requested three illustrative OpenAI workers and one Anthropic role for public-figure casting, prioritized within technology quota before other reference sites; not measured staff or market share. Small cohorts may supply fewer and disclose the shortfall.",
+    "all_headcounts_excluded_from_weighting": true,
+    "commuting_basis": "All assigned workplaces represented on the playable map; no measured commuting or remote-work allocation."
+  },
+  "industry_calibration": {
+    "source_url": "https://data.bls.gov/cew/data/api/2025/a/area/06075.csv",
+    "documentation_url": "https://www.bls.gov/cew/additional-resources/open-data/home.htm",
+    "concepts_url": "https://www.bls.gov/opub/hom/cew/concepts.htm",
+    "retrieved_on": "2026-09-08",
+    "vintage": "2025 annual average",
+    "area_fips": "06075",
+    "scope": "San Francisco County covered employer jobs by place of work, including inbound commuters; not employed residents or unique companies.",
+    "selection": "Private ownership 5, aggregation level 74 (NAICS sectors), plus ownership 1/2/3 all-industry totals at level 71; size 0, quarter A, disclosure blank.",
+    "private_total_jobs": 586454,
+    "private_total_establishments": 65884,
+    "mapping_note": "Simplified simulation sectors are proxies: information is technology, NAICS 54-56 and finance/real estate are professional_services, accommodation is grouped with food_service, government is public_service. Public education/health jobs stay in public_service. Other includes construction/manufacturing/transport/utilities/personal services. Establishments are context only and never staffing weights.",
+    "rows": [
+      {"own_code": "5", "industry_code": "11", "title": "Agriculture, forestry, fishing and hunting", "annual_avg_estabs": 42, "annual_avg_emplvl": 198, "sector": "other"},
+      {"own_code": "5", "industry_code": "21", "title": "Mining", "annual_avg_estabs": 7, "annual_avg_emplvl": 42, "sector": "other"},
+      {"own_code": "5", "industry_code": "22", "title": "Utilities", "annual_avg_estabs": 36, "annual_avg_emplvl": 3739, "sector": "other"},
+      {"own_code": "5", "industry_code": "23", "title": "Construction", "annual_avg_estabs": 1902, "annual_avg_emplvl": 21750, "sector": "other"},
+      {"own_code": "5", "industry_code": "31-33", "title": "Manufacturing", "annual_avg_estabs": 683, "annual_avg_emplvl": 9885, "sector": "other"},
+      {"own_code": "5", "industry_code": "42", "title": "Wholesale trade", "annual_avg_estabs": 950, "annual_avg_emplvl": 8190, "sector": "other"},
+      {"own_code": "5", "industry_code": "44-45", "title": "Retail trade", "annual_avg_estabs": 2658, "annual_avg_emplvl": 30800, "sector": "retail"},
+      {"own_code": "5", "industry_code": "48-49", "title": "Transportation and warehousing", "annual_avg_estabs": 408, "annual_avg_emplvl": 16781, "sector": "other"},
+      {"own_code": "5", "industry_code": "51", "title": "Information", "annual_avg_estabs": 2045, "annual_avg_emplvl": 60288, "sector": "technology"},
+      {"own_code": "5", "industry_code": "52", "title": "Finance and insurance", "annual_avg_estabs": 2188, "annual_avg_emplvl": 37775, "sector": "professional_services"},
+      {"own_code": "5", "industry_code": "53", "title": "Real estate and rental and leasing", "annual_avg_estabs": 2252, "annual_avg_emplvl": 13618, "sector": "professional_services"},
+      {"own_code": "5", "industry_code": "54", "title": "Professional, scientific and technical services", "annual_avg_estabs": 9298, "annual_avg_emplvl": 128489, "sector": "professional_services"},
+      {"own_code": "5", "industry_code": "55", "title": "Management of companies and enterprises", "annual_avg_estabs": 192, "annual_avg_emplvl": 10792, "sector": "professional_services"},
+      {"own_code": "5", "industry_code": "56", "title": "Administrative and support and waste management", "annual_avg_estabs": 1445, "annual_avg_emplvl": 36048, "sector": "professional_services"},
+      {"own_code": "5", "industry_code": "61", "title": "Educational services", "annual_avg_estabs": 750, "annual_avg_emplvl": 15863, "sector": "education"},
+      {"own_code": "5", "industry_code": "62", "title": "Health care and social assistance", "annual_avg_estabs": 30710, "annual_avg_emplvl": 84678, "sector": "healthcare"},
+      {"own_code": "5", "industry_code": "71", "title": "Arts, entertainment and recreation", "annual_avg_estabs": 754, "annual_avg_emplvl": 14102, "sector": "arts"},
+      {"own_code": "5", "industry_code": "72", "title": "Accommodation and food services", "annual_avg_estabs": 4089, "annual_avg_emplvl": 66694, "sector": "food_service"},
+      {"own_code": "5", "industry_code": "81", "title": "Other services except public administration", "annual_avg_estabs": 5212, "annual_avg_emplvl": 26636, "sector": "other"},
+      {"own_code": "5", "industry_code": "99", "title": "Unclassified", "annual_avg_estabs": 263, "annual_avg_emplvl": 85, "sector": "other"},
+      {"own_code": "1", "industry_code": "10", "title": "Federal government, all industries", "annual_avg_estabs": 112, "annual_avg_emplvl": 11030, "sector": "public_service"},
+      {"own_code": "2", "industry_code": "10", "title": "State government, all industries", "annual_avg_estabs": 718, "annual_avg_emplvl": 50166, "sector": "public_service"},
+      {"own_code": "3", "industry_code": "10", "title": "Local government, all industries", "annual_avg_estabs": 202, "annual_avg_emplvl": 49242, "sector": "public_service"}
+    ]
+  },
+  "employers": [
+    {
+      "id": "anthropic_sf",
+      "name": "Anthropic",
+      "neighborhood": "soma",
+      "sector": "technology",
+      "address": "548 Market St, PMB 90375, San Francisco, CA 94104-5401 (public correspondence only)",
+      "address_type": "public_correspondence_not_workplace",
+      "latitude": 37.7896,
+      "longitude": -122.4015,
+      "coordinate_precision": "approximate",
+      "local_headcount": null,
+      "site_headcount": null,
+      "headcount_scope": "unknown",
+      "headcount_year": null,
+      "headcount_status": "unknown",
+      "confidence": {"address": "high_for_correspondence_only", "headcount": "unknown", "coordinates": "approximate"},
+      "reference_geography": "Financial District/South Beach",
+      "within_resident_reference_area": false,
+      "reference_geography_basis": "Approximate public correspondence point only; actual workplace street address is not verified. The gameplay workplace is a synthetic SoMa site.",
+      "sources": [
+        {
+          "url": "https://www.anthropic.com/features/project-deal",
+          "title": "Anthropic Project Deal, April 24 2026; confirms a San Francisco office",
+          "supports": ["san_francisco_office", "workplace_identity"],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://assets.anthropic.com/m/4e20a4ab6512e217/original/Anthropic-Response-to-OSTP-RFI-March-2025-Final-Submission-v3.pdf",
+          "title": "Anthropic public OSTP response March 2025; correspondence address only",
+          "supports": ["public_correspondence_address"],
+          "accessed_on": "2026-09-08"
+        }
+      ],
+      "notes": "Official sources confirm an SF office and a separate public mailing address, not a verified office street address. The rendered workplace is an explicit SoMa proxy; mailing coordinates must not be treated as an office geocode. One synthetic role is reserved for a public-figure simulation; all local/site staffing is unknown."
+    },
+    {
+      "id": "openai_mission_bay",
+      "name": "OpenAI",
+      "neighborhood": "mission_bay",
+      "sector": "technology",
+      "address": "1455 3rd Street, San Francisco, CA 94158",
+      "latitude": 37.7685,
+      "longitude": -122.3894,
+      "coordinate_precision": "approximate",
+      "local_headcount": null,
+      "site_headcount": null,
+      "headcount_scope": "unknown",
+      "headcount_year": null,
+      "headcount_status": "unknown",
+      "confidence": {"address": "high", "headcount": "unknown", "coordinates": "approximate"},
+      "reference_geography": "Mission Bay",
+      "within_resident_reference_area": true,
+      "reference_geography_basis": "1455 Third Street office context in Mission Bay; approximate point, not verified parcel or entrance",
+      "sources": [{
+        "url": "https://cdn.openai.com/pdf/21b88bb5-10a3-4566-919d-f9a6b9c3e632/openai-ostp-rfi-oct-27-2025.pdf",
+        "title": "OpenAI public OSTP submission, October 27 2025, page 1",
+        "supports": ["address", "workplace_identity"],
+        "accessed_on": "2026-09-08"
+      }],
+      "notes": "Official public letterhead confirms local office address, not exact attendance or staffing. All three simulated jobs are fictional scenario assignments; no employee identities or global workforce counts are used."
+    },
+    {
+      "id": "salesforce_sf",
+      "name": "Salesforce",
+      "neighborhood": "soma",
+      "sector": "technology",
+      "address": "415 Mission Street, San Francisco, CA 94105",
+      "latitude": 37.7898,
+      "longitude": -122.3966,
+      "coordinate_precision": "approximate",
+      "local_headcount": 8500,
+      "headcount_scope": "san_francisco_city",
+      "headcount_year": 2025,
+      "sources": [
+        {
+          "url": "https://www.salesforce.com/company/locations/",
+          "title": "Salesforce global offices",
+          "supports": [
+            "address",
+            "workplace_identity"
+          ],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://media.api.sf.gov/documents/City__County_of_San_Francisco_IRFDNo.1_TIRB_Ser2025B_POS.pdf",
+          "title": "City and County of San Francisco 2025B bond disclosure, Appendix A-5 (PDF p. 109)",
+          "supports": [
+            "san_francisco_city_headcount"
+          ],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://data.sfgov.org/resource/j2bu-swwd.geojson",
+          "title": "DataSF Analysis Neighborhoods polygons",
+          "supports": [
+            "reference_geography_from_map_point"
+          ],
+          "accessed_on": "2026-09-08"
+        }
+      ],
+      "confidence": {
+        "address": "high",
+        "headcount": "medium",
+        "coordinates": "approximate"
+      },
+      "notes": "January 2025 citywide count, not the listed office. City disclosure republishes San Francisco Business Times, January 3, 2025, and warns later workforce reductions are not reflected. No current site count or headcount-based allocation is inferred.",
+      "headcount_as_of": "2025-01",
+      "headcount_qualifier": "reported_estimate",
+      "site_headcount": null,
+      "headcount_status": "estimate",
+      "reference_geography": "Financial District/South Beach",
+      "within_resident_reference_area": false,
+      "reference_geography_basis": "Point-in-polygon check of listed map point against DataSF Analysis Neighborhoods; approximate point, not parcel verification."
+    },
+    {
+      "id": "google_spear",
+      "name": "Google — 345 Spear Street",
+      "neighborhood": "soma",
+      "sector": "technology",
+      "address": "345 Spear Street, San Francisco, CA 94105",
+      "latitude": 37.7891,
+      "longitude": -122.3905,
+      "coordinate_precision": "approximate",
+      "local_headcount": 4000,
+      "headcount_scope": "san_francisco_city",
+      "headcount_year": 2025,
+      "sources": [
+        {
+          "url": "https://about.google/company-info/locations/",
+          "title": "Google office locations",
+          "supports": [
+            "address",
+            "workplace_identity"
+          ],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://media.api.sf.gov/documents/City__County_of_San_Francisco_IRFDNo.1_TIRB_Ser2025B_POS.pdf",
+          "title": "City and County of San Francisco 2025B bond disclosure, Appendix A-5 (PDF p. 109)",
+          "supports": [
+            "san_francisco_city_headcount"
+          ],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://data.sfgov.org/resource/j2bu-swwd.geojson",
+          "title": "DataSF Analysis Neighborhoods polygons",
+          "supports": [
+            "reference_geography_from_map_point"
+          ],
+          "accessed_on": "2026-09-08"
+        }
+      ],
+      "confidence": {
+        "address": "high",
+        "headcount": "medium",
+        "coordinates": "approximate"
+      },
+      "notes": "January 2025 citywide count, not the listed office. City disclosure republishes San Francisco Business Times, January 3, 2025, and warns later workforce reductions are not reflected. No current site count or headcount-based allocation is inferred.",
+      "headcount_as_of": "2025-01",
+      "headcount_qualifier": "reported_estimate",
+      "site_headcount": null,
+      "headcount_status": "estimate",
+      "reference_geography": "Financial District/South Beach",
+      "within_resident_reference_area": false,
+      "reference_geography_basis": "Point-in-polygon check of listed map point against DataSF Analysis Neighborhoods; approximate point, not parcel verification."
+    },
+    {
+      "id": "adobe_townsend",
+      "name": "Adobe — Townsend office",
+      "neighborhood": "soma",
+      "sector": "technology",
+      "address": "601 Townsend Street, San Francisco, CA 94103",
+      "latitude": 37.7716,
+      "longitude": -122.4032,
+      "coordinate_precision": "approximate",
+      "local_headcount": null,
+      "headcount_scope": "unknown",
+      "headcount_year": null,
+      "sources": [
+        {
+          "url": "https://www.adobe.com/about-adobe/contact/offices.html",
+          "title": "Adobe office locations",
+          "supports": [
+            "address",
+            "workplace_identity"
+          ],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://data.sfgov.org/resource/j2bu-swwd.geojson",
+          "title": "DataSF Analysis Neighborhoods polygons",
+          "supports": [
+            "reference_geography_from_map_point"
+          ],
+          "accessed_on": "2026-09-08"
+        }
+      ],
+      "confidence": {
+        "address": "high",
+        "headcount": "unknown",
+        "coordinates": "approximate"
+      },
+      "notes": "Site employee count not established by the cited location source.",
+      "headcount_status": "unknown",
+      "reference_geography": "South of Market",
+      "within_resident_reference_area": true,
+      "reference_geography_basis": "Point-in-polygon check of listed map point against DataSF Analysis Neighborhoods; approximate point, not parcel verification."
+    },
+    {
+      "id": "airbnb_brannan",
+      "name": "Airbnb — principal executive office",
+      "neighborhood": "soma",
+      "sector": "technology",
+      "address": "888 Brannan Street, San Francisco, CA 94103",
+      "latitude": 37.7719,
+      "longitude": -122.4053,
+      "coordinate_precision": "approximate",
+      "local_headcount": null,
+      "headcount_scope": "unknown",
+      "headcount_year": null,
+      "sources": [
+        {
+          "url": "https://www.sec.gov/Archives/edgar/data/1559720/000155972025000010/abnb-20241231.htm",
+          "title": "Airbnb 2024 Form 10-K",
+          "supports": [
+            "address",
+            "workplace_identity",
+            "global_headcount"
+          ],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://data.sfgov.org/resource/j2bu-swwd.geojson",
+          "title": "DataSF Analysis Neighborhoods polygons",
+          "supports": [
+            "reference_geography_from_map_point"
+          ],
+          "accessed_on": "2026-09-08"
+        }
+      ],
+      "confidence": {
+        "address": "high",
+        "headcount": "unknown",
+        "coordinates": "approximate"
+      },
+      "notes": "SEC filing lists a principal executive office, not daily attendance. Approximately 7300 employees is global; approximately 11000 third-party support workers are a separate global population. Neither is an SF count.",
+      "headcount_observations": [
+        {
+          "value": 7300,
+          "qualifier": "approximately",
+          "scope": "global",
+          "year": 2024,
+          "as_of": "2024-12-31",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1559720/000155972025000010/abnb-20241231.htm",
+          "used_for_allocation": false
+        }
+      ],
+      "headcount_status": "unknown",
+      "reference_geography": "South of Market",
+      "within_resident_reference_area": true,
+      "reference_geography_basis": "Point-in-polygon check of listed map point against DataSF Analysis Neighborhoods; approximate point, not parcel verification."
+    },
+    {
+      "id": "rainbow_grocery",
+      "name": "Rainbow Grocery Cooperative",
+      "neighborhood": "mission",
+      "sector": "retail",
+      "address": "1745 Folsom Street, San Francisco, CA 94103",
+      "latitude": 37.7698,
+      "longitude": -122.4154,
+      "coordinate_precision": "approximate",
+      "local_headcount": null,
+      "headcount_scope": "unknown",
+      "headcount_year": null,
+      "sources": [
+        {
+          "url": "https://rainbow.coop/",
+          "title": "Rainbow Grocery official website",
+          "supports": [
+            "address",
+            "workplace_identity"
+          ],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://rainbow.coop/about-rainbow/",
+          "title": "About Rainbow",
+          "supports": [
+            "qualitative_workforce_history"
+          ],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://data.sfgov.org/resource/j2bu-swwd.geojson",
+          "title": "DataSF Analysis Neighborhoods polygons",
+          "supports": [
+            "reference_geography_from_map_point"
+          ],
+          "accessed_on": "2026-09-08"
+        }
+      ],
+      "confidence": {
+        "address": "high",
+        "headcount": "unknown",
+        "coordinates": "approximate"
+      },
+      "notes": "Official history says workforce more than doubled from about 85 after the 1996 move; this is not a dated exact current headcount. Mission analysis-neighborhood classification follows the DataSF polygon check; the cooperative also describes its identity as Mission District.",
+      "headcount_status": "unknown",
+      "reference_geography": "Mission",
+      "within_resident_reference_area": true,
+      "reference_geography_basis": "Point-in-polygon check of listed map point against DataSF Analysis Neighborhoods; approximate point, not parcel verification."
+    },
+    {
+      "id": "costco_soma",
+      "name": "Costco — San Francisco warehouse",
+      "neighborhood": "mission",
+      "sector": "retail",
+      "address": "450 10th Street, San Francisco, CA 94103",
+      "latitude": 37.7695,
+      "longitude": -122.4111,
+      "coordinate_precision": "approximate",
+      "local_headcount": null,
+      "headcount_scope": "unknown",
+      "headcount_year": null,
+      "sources": [
+        {
+          "url": "https://www.costco.com/warehouse-locations/warehouse-144.html",
+          "title": "Costco San Francisco warehouse",
+          "supports": [
+            "address",
+            "workplace_identity"
+          ],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://data.sfgov.org/resource/j2bu-swwd.geojson",
+          "title": "DataSF Analysis Neighborhoods polygons",
+          "supports": [
+            "reference_geography_from_map_point"
+          ],
+          "accessed_on": "2026-09-08"
+        }
+      ],
+      "confidence": {
+        "address": "high",
+        "headcount": "unknown",
+        "coordinates": "approximate"
+      },
+      "notes": "Store commonly associated with SoMa; listed approximate point falls in the official Mission analysis neighborhood. Site employee count not established by the location source. Stable ID retained.",
+      "headcount_status": "unknown",
+      "reference_geography": "Mission",
+      "within_resident_reference_area": true,
+      "reference_geography_basis": "Point-in-polygon check of listed map point against DataSF Analysis Neighborhoods; approximate point, not parcel verification."
+    },
+    {
+      "id": "birite_18th",
+      "name": "Bi-Rite Market — 18th Street",
+      "neighborhood": "mission",
+      "sector": "retail",
+      "address": "3639 18th Street, San Francisco, CA 94110",
+      "latitude": 37.7615,
+      "longitude": -122.424,
+      "coordinate_precision": "approximate",
+      "local_headcount": null,
+      "headcount_scope": "unknown",
+      "headcount_year": null,
+      "sources": [
+        {
+          "url": "https://biritemarket.com/visit-us/",
+          "title": "Bi-Rite locations",
+          "supports": [
+            "address",
+            "workplace_identity"
+          ],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://data.sfgov.org/resource/j2bu-swwd.geojson",
+          "title": "DataSF Analysis Neighborhoods polygons",
+          "supports": [
+            "reference_geography_from_map_point"
+          ],
+          "accessed_on": "2026-09-08"
+        }
+      ],
+      "confidence": {
+        "address": "high",
+        "headcount": "unknown",
+        "coordinates": "approximate"
+      },
+      "notes": "Site employee count not established by the cited location source.",
+      "headcount_status": "unknown",
+      "reference_geography": "Mission",
+      "within_resident_reference_area": true,
+      "reference_geography_basis": "Point-in-polygon check of listed map point against DataSF Analysis Neighborhoods; approximate point, not parcel verification."
+    },
+    {
+      "id": "dandelion_valencia",
+      "name": "Dandelion Chocolate — Valencia cafe",
+      "neighborhood": "mission",
+      "sector": "food_service",
+      "address": "740 Valencia Street, San Francisco, CA 94110",
+      "latitude": 37.7613,
+      "longitude": -122.4215,
+      "coordinate_precision": "approximate",
+      "local_headcount": null,
+      "headcount_scope": "unknown",
+      "headcount_year": null,
+      "sources": [
+        {
+          "url": "https://www.dandelionchocolate.com/pages/valencia-street",
+          "title": "Dandelion Valencia Street location",
+          "supports": [
+            "address",
+            "workplace_identity"
+          ],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://data.sfgov.org/resource/j2bu-swwd.geojson",
+          "title": "DataSF Analysis Neighborhoods polygons",
+          "supports": [
+            "reference_geography_from_map_point"
+          ],
+          "accessed_on": "2026-09-08"
+        }
+      ],
+      "confidence": {
+        "address": "high",
+        "headcount": "unknown",
+        "coordinates": "approximate"
+      },
+      "notes": "Site employee count not established by the cited location source.",
+      "headcount_status": "unknown",
+      "reference_geography": "Mission",
+      "within_resident_reference_area": true,
+      "reference_geography_basis": "Point-in-polygon check of listed map point against DataSF Analysis Neighborhoods; approximate point, not parcel verification."
+    },
+    {
+      "id": "tartine_guerrero",
+      "name": "Tartine Bakery — Guerrero",
+      "neighborhood": "mission",
+      "sector": "food_service",
+      "address": "600 Guerrero Street, San Francisco, CA 94110",
+      "latitude": 37.7614,
+      "longitude": -122.4241,
+      "coordinate_precision": "approximate",
+      "local_headcount": null,
+      "headcount_scope": "unknown",
+      "headcount_year": null,
+      "sources": [
+        {
+          "url": "https://tartinebakery.com/san-francisco/bakery",
+          "title": "Tartine Bakery San Francisco",
+          "supports": [
+            "address",
+            "workplace_identity"
+          ],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://data.sfgov.org/resource/j2bu-swwd.geojson",
+          "title": "DataSF Analysis Neighborhoods polygons",
+          "supports": [
+            "reference_geography_from_map_point"
+          ],
+          "accessed_on": "2026-09-08"
+        }
+      ],
+      "confidence": {
+        "address": "high",
+        "headcount": "unknown",
+        "coordinates": "approximate"
+      },
+      "notes": "Site employee count not established by the cited location source.",
+      "headcount_status": "unknown",
+      "reference_geography": "Mission",
+      "within_resident_reference_area": true,
+      "reference_geography_basis": "Point-in-polygon check of listed map point against DataSF Analysis Neighborhoods; approximate point, not parcel verification."
+    },
+    {
+      "id": "sfmoma",
+      "name": "San Francisco Museum of Modern Art",
+      "neighborhood": "soma",
+      "sector": "arts",
+      "address": "151 Third Street, San Francisco, CA 94103",
+      "latitude": 37.7857,
+      "longitude": -122.4011,
+      "coordinate_precision": "approximate",
+      "local_headcount": null,
+      "headcount_scope": "unknown",
+      "headcount_year": null,
+      "sources": [
+        {
+          "url": "https://www.sfmoma.org/about/contact-us/",
+          "title": "SFMOMA contact information",
+          "supports": [
+            "address",
+            "workplace_identity"
+          ],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://data.sfgov.org/resource/j2bu-swwd.geojson",
+          "title": "DataSF Analysis Neighborhoods polygons",
+          "supports": [
+            "reference_geography_from_map_point"
+          ],
+          "accessed_on": "2026-09-08"
+        }
+      ],
+      "confidence": {
+        "address": "high",
+        "headcount": "unknown",
+        "coordinates": "approximate"
+      },
+      "notes": "Site employee count not established by the cited location source.",
+      "headcount_status": "unknown",
+      "reference_geography": "Financial District/South Beach",
+      "within_resident_reference_area": false,
+      "reference_geography_basis": "Point-in-polygon check of listed map point against DataSF Analysis Neighborhoods; approximate point, not parcel verification."
+    },
+    {
+      "id": "ybca",
+      "name": "Yerba Buena Center for the Arts",
+      "neighborhood": "soma",
+      "sector": "arts",
+      "address": "701 Mission Street, San Francisco, CA 94103",
+      "latitude": 37.7852,
+      "longitude": -122.4023,
+      "coordinate_precision": "approximate",
+      "local_headcount": null,
+      "headcount_scope": "unknown",
+      "headcount_year": null,
+      "sources": [
+        {
+          "url": "https://ybca.org/campus/",
+          "title": "YBCA campus",
+          "supports": [
+            "address",
+            "workplace_identity"
+          ],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://data.sfgov.org/resource/j2bu-swwd.geojson",
+          "title": "DataSF Analysis Neighborhoods polygons",
+          "supports": [
+            "reference_geography_from_map_point"
+          ],
+          "accessed_on": "2026-09-08"
+        }
+      ],
+      "confidence": {
+        "address": "high",
+        "headcount": "unknown",
+        "coordinates": "approximate"
+      },
+      "notes": "Site employee count not established by the cited location source.",
+      "headcount_status": "unknown",
+      "reference_geography": "Financial District/South Beach",
+      "within_resident_reference_area": false,
+      "reference_geography_basis": "Point-in-polygon check of listed map point against DataSF Analysis Neighborhoods; approximate point, not parcel verification."
+    },
+    {
+      "id": "brava",
+      "name": "Brava for Women in the Arts",
+      "neighborhood": "mission",
+      "sector": "arts",
+      "address": "2781 24th Street, San Francisco, CA 94110",
+      "latitude": 37.7526,
+      "longitude": -122.4088,
+      "coordinate_precision": "approximate",
+      "local_headcount": null,
+      "headcount_scope": "unknown",
+      "headcount_year": null,
+      "sources": [
+        {
+          "url": "https://www.brava.org/support",
+          "title": "Brava official address",
+          "supports": [
+            "address",
+            "workplace_identity"
+          ],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://data.sfgov.org/resource/j2bu-swwd.geojson",
+          "title": "DataSF Analysis Neighborhoods polygons",
+          "supports": [
+            "reference_geography_from_map_point"
+          ],
+          "accessed_on": "2026-09-08"
+        }
+      ],
+      "confidence": {
+        "address": "high",
+        "headcount": "unknown",
+        "coordinates": "approximate"
+      },
+      "notes": "Site employee count not established by the cited location source.",
+      "headcount_status": "unknown",
+      "reference_geography": "Mission",
+      "within_resident_reference_area": true,
+      "reference_geography_basis": "Point-in-polygon check of listed map point against DataSF Analysis Neighborhoods; approximate point, not parcel verification."
+    },
+    {
+      "id": "zsfg",
+      "name": "Zuckerberg San Francisco General Hospital and Trauma Center",
+      "neighborhood": "mission",
+      "sector": "healthcare",
+      "address": "1001 Potrero Avenue, San Francisco, CA 94110",
+      "latitude": 37.7558,
+      "longitude": -122.4044,
+      "coordinate_precision": "approximate",
+      "local_headcount": null,
+      "headcount_scope": "unknown",
+      "headcount_year": null,
+      "sources": [
+        {
+          "url": "https://www.zuckerbergsanfranciscogeneral.org/about-us/",
+          "title": "ZSFG hospital information",
+          "supports": [
+            "address",
+            "workplace_identity"
+          ],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://data.sfgov.org/resource/j2bu-swwd.geojson",
+          "title": "DataSF Analysis Neighborhoods polygons",
+          "supports": [
+            "reference_geography_from_map_point"
+          ],
+          "accessed_on": "2026-09-08"
+        }
+      ],
+      "confidence": {
+        "address": "high",
+        "headcount": "unknown",
+        "coordinates": "approximate"
+      },
+      "notes": "Mission/Potrero boundary campus, grouped with Mission for this two-neighborhood catalog. Campus includes SFDPH and UCSF workers; UCSF-wide, SFDPH-wide, patient, bed and training-attendee totals are not site employee counts.",
+      "headcount_status": "unknown",
+      "reference_geography": "Mission",
+      "within_resident_reference_area": true,
+      "reference_geography_basis": "Point-in-polygon check of listed map point against DataSF Analysis Neighborhoods; approximate point, not parcel verification."
+    },
+    {
+      "id": "mission_mental_health",
+      "name": "SFDPH — Mission Mental Health",
+      "neighborhood": "mission",
+      "sector": "healthcare",
+      "address": "2712 Mission Street, San Francisco, CA 94110",
+      "latitude": 37.7538,
+      "longitude": -122.4189,
+      "coordinate_precision": "approximate",
+      "local_headcount": null,
+      "headcount_scope": "unknown",
+      "headcount_year": null,
+      "sources": [
+        {
+          "url": "https://media.api.sf.gov/documents/Provider_Directory_MH_Part_1_-_Program_Info_English_Dec_2025.pdf",
+          "title": "SF Behavioral Health provider directory, December 2025, p. 16",
+          "supports": [
+            "address",
+            "workplace_identity"
+          ],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://data.sfgov.org/resource/j2bu-swwd.geojson",
+          "title": "DataSF Analysis Neighborhoods polygons",
+          "supports": [
+            "reference_geography_from_map_point"
+          ],
+          "accessed_on": "2026-09-08"
+        }
+      ],
+      "confidence": {
+        "address": "high",
+        "headcount": "unknown",
+        "coordinates": "approximate"
+      },
+      "notes": "Site employee count not established by the cited location source.",
+      "headcount_status": "unknown",
+      "reference_geography": "Mission",
+      "within_resident_reference_area": true,
+      "reference_geography_basis": "Point-in-polygon check of listed map point against DataSF Analysis Neighborhoods; approximate point, not parcel verification."
+    },
+    {
+      "id": "equity_health",
+      "name": "Equity Health — Seventh Street clinic",
+      "neighborhood": "soma",
+      "sector": "healthcare",
+      "address": "229 7th Street, San Francisco, CA 94103",
+      "latitude": 37.7768,
+      "longitude": -122.4083,
+      "coordinate_precision": "approximate",
+      "local_headcount": null,
+      "headcount_scope": "unknown",
+      "headcount_year": null,
+      "sources": [
+        {
+          "url": "https://hcai.ca.gov/facility/south-of-market-health-center/",
+          "title": "California HCAI facility directory",
+          "supports": [
+            "address",
+            "workplace_identity"
+          ],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://www.sfccc.org/equity-health",
+          "title": "SF Community Clinic Consortium — Equity Health",
+          "supports": [
+            "current_operating_name",
+            "address"
+          ],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://data.sfgov.org/resource/j2bu-swwd.geojson",
+          "title": "DataSF Analysis Neighborhoods polygons",
+          "supports": [
+            "reference_geography_from_map_point"
+          ],
+          "accessed_on": "2026-09-08"
+        }
+      ],
+      "confidence": {
+        "address": "high",
+        "headcount": "unknown",
+        "coordinates": "approximate"
+      },
+      "notes": "HCAI lists an open clinic as South Of Market Health Center; its clinic consortium identifies the current name as Equity Health. Patients served are not workers.",
+      "headcount_status": "unknown",
+      "reference_geography": "South of Market",
+      "within_resident_reference_area": true,
+      "reference_geography_basis": "Point-in-polygon check of listed map point against DataSF Analysis Neighborhoods; approximate point, not parcel verification."
+    },
+    {
+      "id": "ccsf_mission",
+      "name": "City College of San Francisco — Mission Center",
+      "neighborhood": "mission",
+      "sector": "education",
+      "address": "1125 Valencia Street, San Francisco, CA 94110",
+      "latitude": 37.7548283,
+      "longitude": -122.420623,
+      "coordinate_precision": "official_site_map_point",
+      "local_headcount": null,
+      "headcount_scope": "unknown",
+      "headcount_year": null,
+      "sources": [
+        {
+          "url": "https://www.ccsf.edu/about/our-locations/mission-center",
+          "title": "CCSF Mission Center",
+          "supports": [
+            "address",
+            "workplace_identity"
+          ],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://www.ccsf.edu/about/our-locations/map/mission",
+          "title": "CCSF Mission campus map",
+          "supports": [
+            "coordinates"
+          ],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://data.sfgov.org/resource/j2bu-swwd.geojson",
+          "title": "DataSF Analysis Neighborhoods polygons",
+          "supports": [
+            "reference_geography_from_map_point"
+          ],
+          "accessed_on": "2026-09-08"
+        }
+      ],
+      "confidence": {
+        "address": "high",
+        "headcount": "unknown",
+        "coordinates": "official_site_map_point"
+      },
+      "notes": "Coordinates published by CCSF map. Postal code follows the Mission Center homepage; map page has an inconsistent 94112 postal code. Student enrollment is not employee headcount.",
+      "headcount_status": "unknown",
+      "reference_geography": "Mission",
+      "within_resident_reference_area": true,
+      "reference_geography_basis": "Point-in-polygon check of listed map point against DataSF Analysis Neighborhoods; approximate point, not parcel verification."
+    },
+    {
+      "id": "sfpl_mission",
+      "name": "San Francisco Public Library — Mission temporary branch",
+      "neighborhood": "mission",
+      "sector": "public_service",
+      "address": "1234 Valencia Street, San Francisco, CA 94110",
+      "latitude": 37.753,
+      "longitude": -122.4205,
+      "coordinate_precision": "approximate",
+      "local_headcount": null,
+      "headcount_scope": "unknown",
+      "headcount_year": null,
+      "sources": [
+        {
+          "url": "https://sfpl.org/locations/mission",
+          "title": "SFPL Mission Branch",
+          "supports": [
+            "address",
+            "workplace_identity"
+          ],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://data.sfgov.org/resource/j2bu-swwd.geojson",
+          "title": "DataSF Analysis Neighborhoods polygons",
+          "supports": [
+            "reference_geography_from_map_point"
+          ],
+          "accessed_on": "2026-09-08"
+        }
+      ],
+      "confidence": {
+        "address": "high",
+        "headcount": "unknown",
+        "coordinates": "approximate"
+      },
+      "notes": "Official branch page lists temporary service at 1234 Valencia while 300 Bartlett is closed for renovation. Library-system staffing is not branch staffing.",
+      "headcount_status": "unknown",
+      "reference_geography": "Mission",
+      "within_resident_reference_area": true,
+      "reference_geography_basis": "Point-in-polygon check of listed map point against DataSF Analysis Neighborhoods; approximate point, not parcel verification."
+    },
+    {
+      "id": "sffd_station_1",
+      "name": "San Francisco Fire Department — Station 1",
+      "neighborhood": "soma",
+      "sector": "public_service",
+      "address": "935 Folsom Street, San Francisco, CA 94107",
+      "latitude": 37.7799,
+      "longitude": -122.4044,
+      "coordinate_precision": "approximate",
+      "local_headcount": null,
+      "headcount_scope": "unknown",
+      "headcount_year": null,
+      "sources": [
+        {
+          "url": "https://sf-fire.org/fire-station/san-francisco-fire-station-1",
+          "title": "SFFD Station 1",
+          "supports": [
+            "address",
+            "workplace_identity"
+          ],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://data.sfgov.org/resource/j2bu-swwd.geojson",
+          "title": "DataSF Analysis Neighborhoods polygons",
+          "supports": [
+            "reference_geography_from_map_point"
+          ],
+          "accessed_on": "2026-09-08"
+        }
+      ],
+      "confidence": {
+        "address": "high",
+        "headcount": "unknown",
+        "coordinates": "approximate"
+      },
+      "notes": "Site employee count not established by the cited location source.",
+      "headcount_status": "unknown",
+      "reference_geography": "South of Market",
+      "within_resident_reference_area": true,
+      "reference_geography_basis": "Point-in-polygon check of listed map point against DataSF Analysis Neighborhoods; approximate point, not parcel verification."
+    },
+    {
+      "id": "la_raza_centro_legal",
+      "name": "La Raza Centro Legal",
+      "neighborhood": "mission",
+      "sector": "professional_services",
+      "address": "474 Valencia Street, Suite 295, San Francisco, CA 94103",
+      "latitude": 37.7654,
+      "longitude": -122.422,
+      "coordinate_precision": "approximate",
+      "local_headcount": null,
+      "headcount_scope": "unknown",
+      "headcount_year": null,
+      "sources": [
+        {
+          "url": "https://www.lrcl.org/",
+          "title": "La Raza Centro Legal official website",
+          "supports": [
+            "address",
+            "workplace_identity"
+          ],
+          "accessed_on": "2026-09-08"
+        },
+        {
+          "url": "https://data.sfgov.org/resource/j2bu-swwd.geojson",
+          "title": "DataSF Analysis Neighborhoods polygons",
+          "supports": [
+            "reference_geography_from_map_point"
+          ],
+          "accessed_on": "2026-09-08"
+        }
+      ],
+      "confidence": {
+        "address": "high",
+        "headcount": "unknown",
+        "coordinates": "approximate"
+      },
+      "notes": "Site employee count not established by the cited location source.",
+      "headcount_status": "unknown",
+      "reference_geography": "Mission",
+      "within_resident_reference_area": true,
+      "reference_geography_basis": "Point-in-polygon check of listed map point against DataSF Analysis Neighborhoods; approximate point, not parcel verification."
+    }
+  ]
+}

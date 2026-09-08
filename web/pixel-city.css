@@ -1,0 +1,19 @@
+/* Compact pixel-world controls. The city, not map chrome, is the primary view. */
+.canvas-wrap { background: #488f9f; }
+#world-canvas { image-rendering: pixelated; }
+.map-caption { display: none; }
+.map-status { top: 14px; left: 14px; background: #eff0d0; border: 2px solid #687a4e; color: #40553c; font-size: 10px; box-shadow: 2px 2px #4b633c55; }
+.geographic-controls { top: 56px; left: 14px; right: 14px; flex-wrap: wrap; gap: 4px; }
+.geographic-controls button, #map-places, .personal-map-controls button { background: #e9e6c1; color: #43583a; border: 1px solid #7f8d60; border-bottom-width: 3px; padding: 7px 9px; font: 10px 'DM Mono', monospace; border-radius: 0; }
+#map-places { max-width: 175px; text-overflow: ellipsis; }
+.personal-map-controls { display: flex; gap: 6px; padding: 12px 15px 0; }
+.map-key { background: #eff0d0ed; border: 1px solid #758557; backdrop-filter: none; color: #44573b; }
+.interaction-status { top: 101px; width: fit-content; max-width: calc(100% - 28px); }
+.tool-hint { top: 135px; }
+@media(max-width:700px) {
+  .geographic-controls { top: 49px; }
+  .geographic-controls button, #map-places { padding: 5px 6px; font-size: 9px; }
+  #map-places { max-width: 130px; }
+  .map-status { font-size: 9px; }
+  .interaction-status { top: 117px; }
+}

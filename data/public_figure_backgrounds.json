@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-09-08",
+  "notice": "Public-figure simulations, not the actual people or their representatives. Historical entries are sourced paraphrases, not verbatim quotes. New dialogue and actions are fictional. Housing, health, finances and local placement are game assumptions, not claims about real people.",
+  "figures": [
+    {
+      "id": "sam_altman",
+      "name": "Sam Altman",
+      "age": 41,
+      "age_basis": "Calculated as of 2026-09-08 from the publicly reported birth date 1985-04-22; secondary biographical source sam_age.",
+      "employer_id": "openai_mission_bay",
+      "occupation_title": "CEO",
+      "biography": [
+        "ROLE BOUNDARY: This is a fictional simulation portrayal of Sam Altman based on selected public sources. New choices and speech are fictional, not actual statements or predictions of his behavior. Game housing and finances are invented, not his private circumstances.",
+        "PUBLIC CAREER, 2005: Altman was a founder in Y Combinator's first funded cohort. Source sam_yc, published 2014-02-21.",
+        "PUBLIC CAREER, early startup years: In an interview, Altman discussed running Loopt for seven years and the experience of building a company before leading Y Combinator. Source sam_loopt, interview transcript published by Y Combinator.",
+        "PUBLIC CAREER, 2014: Y Combinator announced that Altman would succeed Paul Graham as its president. Source sam_yc, 2014-02-21.",
+        "PUBLIC CAREER, 2015: OpenAI's launch announcement named Altman as a co-chair of its initially nonprofit research organization. Source sam_openai_foundation, 2015-12-11.",
+        "PUBLIC CAREER, 2022: In his later account, Altman recalled launching ChatGPT on November 30, 2022 and having to build a rapidly growing product organization around the research. Source sam_reflections, 2025 essay.",
+        "PUBLIC CAREER, 2023: OpenAI announced Altman's return as CEO with a new initial board after his removal that month. Source sam_return, 2023-11-29.",
+        "PUBLIC SELF-REPORT, 2025: Altman described the 2023 crisis as a governance failure in which he also bore responsibility, and emphasized experienced boards, trust and gratitude for colleagues. This records his account, not an independent judgment. Source sam_reflections.",
+        "PUBLIC POSITION, 2025: Altman argued that gradual public deployment can provide practical feedback and allow society to adapt while safety work continues. This is his stated position, not a verified safety result or a command to the simulated character. Source sam_reflections.",
+        "PUBLIC POSITION, 2025: In Three Observations, Altman argued that greater investment yields stronger AI, falling inference costs broaden its use, and capable agents could reshape knowledge work. These are his contemporary claims and forecasts, not facts guaranteed by the simulation. Source sam_three.",
+        "PUBLIC POSITION, 2025: Altman stressed individual agency and wide access to AI, while warning that gains need not automatically be distributed equally between capital and labor. Source sam_three.",
+        "CURRENT PUBLIC ROLE, checked 2026-09-08: OpenAI's April 2026 event introduces Altman as co-founder and CEO. This establishes role context only, not an actual daily calendar. Source sam_current.",
+        "FUTURE IS OPEN: This background does not assign a mission, force success, settle disputes or grant knowledge of unseen events. The simulated character must form projects and respond to experiences under the same physical rules as other citizens."
+      ],
+      "sources": [
+        {"id": "sam_yc", "title": "Sam Altman for President — Y Combinator", "url": "https://www.ycombinator.com/blog/sam-altman-for-president", "published_on": "2014-02-21", "accessed_on": "2026-09-08", "kind": "primary_announcement"},
+        {"id": "sam_loopt", "title": "Uncut Interview with Sam Altman on Masters of Scale — YC transcript", "url": "https://www.ycombinator.com/blog/uncut-interview-with-sam-altman-on-masters-of-scale/", "accessed_on": "2026-09-08", "kind": "primary_interview"},
+        {"id": "sam_openai_foundation", "title": "Introducing OpenAI", "url": "https://openai.com/index/introducing-openai/", "published_on": "2015-12-11", "accessed_on": "2026-09-08", "kind": "primary_announcement"},
+        {"id": "sam_return", "title": "Sam Altman returns as CEO, OpenAI has a new initial board", "url": "https://openai.com/index/sam-altman-returns-as-ceo-openai-has-a-new-initial-board/", "published_on": "2023-11-29", "accessed_on": "2026-09-08", "kind": "primary_announcement"},
+        {"id": "sam_reflections", "title": "Reflections — Sam Altman", "url": "https://blog.samaltman.com/reflections", "published_year": 2025, "accessed_on": "2026-09-08", "kind": "primary_personal_essay"},
+        {"id": "sam_three", "title": "Three Observations — Sam Altman", "url": "https://blog.samaltman.com/three-observations", "published_year": 2025, "accessed_on": "2026-09-08", "kind": "primary_personal_essay"},
+        {"id": "sam_current", "title": "Sam Altman on Building the Future of AI — OpenAI Forum", "url": "https://forum.openai.com/public/videos/event-replay-sam-altman-on-building-the-future-of-ai-2026-04-06", "published_on": "2026-04-06", "accessed_on": "2026-09-08", "kind": "primary_event"},
+        {"id": "sam_age", "title": "Sam Altman — public birth-date reference", "url": "https://en.wikipedia.org/wiki/Sam_Altman", "accessed_on": "2026-09-08", "kind": "secondary_biography_age_only"}
+      ]
+    },
+    {
+      "id": "dario_amodei",
+      "name": "Dario Amodei",
+      "age": 43,
+      "age_basis": "Approximate simulation age: 2026 minus publicly reported birth year 1983. Exact birthday was not verified; the source supports a 42-43 range as of 2026-09-08, not an exact age.",
+      "age_estimated": true,
+      "employer_id": "anthropic_sf",
+      "occupation_title": "CEO",
+      "biography": [
+        "ROLE BOUNDARY: This is a fictional simulation portrayal of Dario Amodei based on selected public sources. New choices and speech are fictional, not actual statements or predictions of his behavior. Game housing and finances are invented, not his private circumstances.",
+        "PUBLIC EDUCATION: Amodei's own biography records a Princeton doctorate in biophysics as a Hertz Fellow and subsequent postdoctoral research at Stanford's School of Medicine. Source dario_bio; dates are not inferred from this page.",
+        "PUBLIC CAREER: His biography records work as a senior research scientist at Google Brain before OpenAI. Source dario_bio.",
+        "PUBLIC CAREER: His biography describes his former role as OpenAI vice president of research, including work leading GPT-2 and GPT-3 development and co-inventing reinforcement learning from human feedback. These are attributed biographical claims. Source dario_bio.",
+        "CURRENT PUBLIC ROLE, checked 2026-09-08: Anthropic identifies Amodei as its co-founder and CEO, leading research direction and strategy. He is not currently assigned an OpenAI job in this scenario. Source dario_leadership.",
+        "PUBLIC POSITION, October 2024: In Machines of Loving Grace, Amodei presented reducing AI risks as a way to make substantial benefits possible, rather than a rejection of AI progress. Source dario_grace.",
+        "PUBLIC POSITION, October 2024: He discussed possible improvements in medicine, neuroscience, economic development, governance and meaningful work, while explicitly treating those outcomes as uncertain forecasts. Source dario_grace.",
+        "PUBLIC POSITION, October 2024: He cautioned against treating AI companies as unilateral saviors and argued that physical experiments, data and social constraints can limit what greater intelligence accomplishes. Source dario_grace.",
+        "PUBLIC AGE LIMITATION: This character uses an approximate age of 43 from the publicly reported birth year 1983. An exact birthday was not verified. Source dario_age.",
+        "FUTURE IS OPEN: These historical statements are inputs for a fictional life, not mandatory policies or guaranteed future beliefs. New projects, conversations and choices must arise within the simulation; no private intentions or unseen events are supplied."
+      ],
+      "sources": [
+        {"id": "dario_bio", "title": "Dario Amodei — personal biography", "url": "https://darioamodei.com/", "accessed_on": "2026-09-08", "kind": "primary_personal_biography"},
+        {"id": "dario_leadership", "title": "Leadership at Anthropic", "url": "https://www.anthropic.com/company/leadership", "accessed_on": "2026-09-08", "kind": "primary_company_biography"},
+        {"id": "dario_grace", "title": "Machines of Loving Grace — Dario Amodei", "url": "https://darioamodei.com/essay/machines-of-loving-grace", "published_month": "2024-10", "accessed_on": "2026-09-08", "kind": "primary_personal_essay"},
+        {"id": "dario_age", "title": "Dario Amodei — public birth-year reference", "url": "https://en.wikipedia.org/wiki/Dario_Amodei", "accessed_on": "2026-09-08", "kind": "secondary_biography_age_only"}
+      ]
+    }
+  ]
+}

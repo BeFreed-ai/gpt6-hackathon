@@ -1,4 +1,6 @@
 // Original, code-drawn pixel art. World coordinates stay server-authoritative.
+import { WasteReactions, drawWaste, drawWasteSplash } from "./waste-reactions.js";
+import { PhysicalEffects, citizenPose, drawCitizen, drawImpact, confirmedTrauma } from "./citizen-art.js";
 const UNIT = 0.4;
 const WIDTH = 560;
 const HEIGHT = 328;
@@ -47,6 +49,9 @@ export class PixelWorld {
     this.focus = { x: WIDTH / 2, y: HEIGHT / 2 };
     this.positions = new Map();
     this.lastFrame = 0;
+    this.wasteReactions = new WasteReactions();
+    this.physicalEffects = new PhysicalEffects();
+    this.reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     this.createGround();
   }
 
@@ -119,10 +124,26 @@ export class PixelWorld {
     return scale;
   }
 
-  setZoom(value) {
-    this.zoom = Math.max(1, Math.min(3, value));
-    if (this.zoom === 1) this.focus = { x: WIDTH / 2, y: HEIGHT / 2 };
+  setZoom(value, anchor) {
+    const before = anchor ? this.worldPoint(anchor.x, anchor.y) : null;
+    this.zoom = Math.max(0.6, Math.min(8, value));
     this.calculateView();
+    if (before) {
+      const after = this.worldPoint(anchor.x, anchor.y);
+      this.focus.x += (before.x - after.x) * UNIT;
+      this.focus.y += (before.y - after.y) * UNIT;
+      this.calculateView();
+    }
+  }
+
+  focusCitizen(agent) {
+    this.focus = {x: agent.position.x * UNIT, y: agent.position.y * UNIT - 10};
+    this.setZoom(6);
+  }
+  hitTest(agent, click) {
+    const point = this.screenPoint(this.positions.get(agent.id) || agent.position);
+    return Math.abs(point.x-click.x) <= Math.max(13,22*this.view.scale) &&
+      click.y >= point.y-64*this.view.scale && click.y <= point.y+10;
   }
 
   pan(dx, dy) {
@@ -157,6 +178,37 @@ export class PixelWorld {
 
   building(item) {
     const c = this.art;
+    if (item.metadata?.footprint_cell) {
+      // Source street geometry has synthetic one-cell sites, not giant parcel sprites.
+      const x = item.position.x * UNIT, y = item.position.y * UNIT;
+      const tones = { home: "#b8795e", tech: "#628c99", clinic: "#78a083", park: "#779553", shelter: "#b0a07c" };
+      if (item.metadata.quake_damage) {
+        if (item.metadata.damage_state === "collapsed") {
+          this.rect(c, "#74695c", x - 6, y - 4, 12, 9);
+          for (let i = 0; i < 8; i++) this.rect(c, i % 2 ? "#b9a185" : "#8e7766", x - 7 + i * 2, y - 3 + (i % 3) * 3, 3, 2);
+          if (this.zoom > 1.1) this.label("COLLAPSED / CLOSED", x, y - 9, "#8a3025", "#fff0ce");
+          return;
+        }
+        this.rect(c, "#8a3025", x - 5, y - 5, 10, 10);
+        this.rect(c, "#f3bb63", x - 2, y - 4, 2, 5);
+        this.rect(c, "#f3bb63", x, y + 1, 2, 3);
+        this.rect(c, "#786756", x - 7, y + 4, 3, 2);
+        this.rect(c, "#786756", x + 5, y + 3, 3, 3);
+        if (this.zoom > 1.1) this.label("DAMAGED / CLOSED", x, y - 9, "#8a3025", "#fff0ce");
+        return;
+      }
+      this.rect(c, "#444b42", x - 4, y - 5, 8, 9);
+      this.rect(c, tones[item.kind] || "#bd9c76", x - 3, y - 4, 6, 7);
+      this.rect(c, "#ebdcb5", x - 2, y - 2, 2, 2);
+      this.rect(c, "#ebdcb5", x + 1, y - 2, 2, 2);
+      const entrance = item.metadata.entrance;
+      if (entrance) {
+        const dx = Math.sign(entrance.x - item.position.x), dy = Math.sign(entrance.y - item.position.y);
+        this.rect(c, "#f6d580", x + dx * 4 - 1, y + dy * 4 - 1, 2, 2);
+      }
+      if (this.zoom > 2.2) this.label(item.name.slice(0, 23), x, y - 8);
+      return;
+    }
     const w = Math.max(14, Math.round(item.width * UNIT));
     const h = Math.max(12, Math.round(item.height * UNIT));
     const x = Math.round(item.position.x * UNIT - w / 2);
@@ -193,6 +245,7 @@ export class PixelWorld {
       dining: ["#ead6a5", "#aa6245", "#dc9f6f"], kitchen: ["#d9deaf", "#647e4d", "#8ba45e"],
       launchpad: ["#ccc3de", "#68557e", "#9e83aa"], company: ["#efce8d", "#477f7d", "#76aaa1"],
       depot: ["#c9bf9b", "#776645", "#a49064"],
+      workplace: ["#d5cab1", "#696964", "#939587"],
     };
     const [wall, roof, tile] = tones[item.kind] || tones.home;
     r("#63713e", 4, h - 2, w + 3, 6);
@@ -234,6 +287,11 @@ export class PixelWorld {
       this.label(sign, x + w / 2, y + h - 5);
     }
     if (item.open_now === false) r("#b26149", w / 2 - 3, h - 7, 7, 2);
+    if (item.metadata?.quake_damage) {
+      r("#9a3e2e", w / 2, 1, 3, h - 3);
+      r("#e8b15d", w / 2 - 3, h / 2, 8, 2);
+      this.label("DAMAGED / CLOSED", x + w / 2, y - 8, "#8a3025", "#fff0ce");
+    }
     if (item.in_use > 0) {
       r("#3b6455", 1, h + 5, w - 2, 3);
       r("#dfb949", 1, h + 5, Math.max(3, (w - 2) * Math.min(1, item.in_use / (item.metadata.capacity || item.metadata.beds || 2))), 3);
@@ -241,29 +299,66 @@ export class PixelWorld {
   }
 
   citizen(agent, time, selected) {
+    const pose = this.wasteReactions.pose(agent, this.lastFrame, this.reducedMotion);
     const position = this.positions.get(agent.id) || agent.position;
     const x = Math.round(position.x * UNIT);
-    const y = Math.round(position.y * UNIT);
-    const moving = /walking|commuting|looking|going|seeking/.test(agent.current_action);
-    const frame = Math.floor(time / 170 + Number(agent.id.slice(-2))) % 2;
-    const bob = moving ? frame : 0;
+    const groundY = Math.round(position.y * UNIT);
+    const y = groundY;
     const c = this.art;
-    const colors = { o: "#60522f", y: agent.health < 35 ? "#c6ad4d" : palette.yellow,
-      h: "#ffed8d", w: "#fff2c5", e: "#393b30", m: "#a16c36", b: "#729795" };
-    this.rect(c, "#586637", x - 6, y + 5, 14, 3);
-    creature.forEach((row, yy) => [...row].forEach((key, xx) => {
-      if (colors[key]) this.rect(c, colors[key], x - 7 + xx, y - 11 + yy - bob, 1, 1);
-    }));
-    if (moving) { this.rect(c, "#604f30", x - 4, y + 5 - frame, 3, 2); this.rect(c, "#604f30", x + 2, y + 4 + frame, 3, 2); }
-    if (!agent.has_home) { this.rect(c, "#9a6149", x - 8, y - 1, 4, 6); this.rect(c, "#d7b889", x - 8, y, 3, 1); }
+    this.rect(c, "#586637", x - 6, y, 14, 3);
+    if (pose.splash) drawWasteSplash(c, x, groundY, 0.8);
+    drawCitizen(c, x, y, 0.4, citizenPose(agent, pose, time, !time, this.reducedMotion));
     if (selected) {
       const r = (a, b, w, h) => this.rect(c, "#fff6cf", x + a, y + b, w, h);
       for (const sign of [-1, 1]) { r(sign * 12, -13, 1, 5); r(sign * 12, 5, 1, 5); }
       r(-12, -13, 5, 1); r(8, -13, 5, 1); r(-12, 9, 5, 1); r(8, 9, 5, 1);
     }
-    if (agent.is_thinking) this.label("...", x + 8, y - 16);
-    else if (agent.reaction && !agent.speech) this.label("!", x + 8, y - 17);
+    if (pose.disgust && !agent.speech) this.label("Stepped in waste", x, y - 30);
+    else if (agent.is_thinking) this.label("...", x + 8, y - 30);
+    else if (agent.reaction && !agent.speech) this.label("!", x + 8, y - 30);
     if (selected || this.zoom > 1.3) this.label(agent.name, x, y + 20);
+  }
+
+  geography(map, labelsOnly = false) {
+    const c = this.art;
+    if (!labelsOnly) {
+      this.rect(c, "#e1dbbd", 0, 0, WIDTH, HEIGHT);
+      for (const street of map.streets) {
+        c.beginPath();
+        street.points.forEach((point, index) => {
+          if (index === 0) c.moveTo(point.x * UNIT, point.y * UNIT);
+          else c.lineTo(point.x * UNIT, point.y * UNIT);
+        });
+        c.strokeStyle = street.name === "MARKET ST" ? "#b89457" : "#b9b39c";
+        c.lineWidth = street.name === "MARKET ST" ? 4 : 2;
+        c.stroke();
+      }
+      return;
+    }
+    const occupied = [];
+    for (const label of map.labels) {
+      const major = /MARKET|MISSION|VALENCIA|FOLSOM|HOWARD|HARRISON|DIVISION|16TH|24TH|DOLORES/.test(label.text);
+      if (!major && this.zoom < 1.5) continue;
+      const x = label.x * UNIT, y = label.y * UNIT;
+      if (occupied.some(p => Math.abs(p.x - x) < 43 && Math.abs(p.y - y) < 12)) continue;
+      occupied.push({ x, y });
+      c.save();
+      c.translate(x, y); c.rotate(label.angle * Math.PI / 180);
+      c.font = "bold 5px monospace"; c.textAlign = "center";
+      c.lineWidth = 2; c.strokeStyle = "#eee8cf";
+      c.strokeText(label.text.replace(/^0/, ""), 0, 0);
+      c.fillStyle = "#655b4b"; c.fillText(label.text.replace(/^0/, ""), 0, 0);
+      c.restore();
+    }
+    for (const district of map.district_labels) {
+      this.label(district.name, district.x * UNIT, district.y * UNIT, "#f8eecf", "#6b7364");
+    }
+    for (const landmark of map.landmarks) {
+      const x = landmark.position.x * UNIT, y = landmark.position.y * UNIT;
+      this.rect(c, landmark.kind === "park" ? "#58815b" : "#39738c", x - 2, y - 2, 4, 4);
+      if (this.zoom > 1.8) this.label(landmark.name, x, y - 6);
+    }
+    this.label("N ↑ · SF STREETS / SYNTHETIC SITES", WIDTH / 2, 10, "#f5edcf", "#626959");
   }
 
   draw(state, selectedId, hoveredId, brush = null) {
@@ -274,10 +369,24 @@ export class PixelWorld {
     c.clearRect(0, 0, WIDTH, HEIGHT);
     c.drawImage(this.ground, 0, 0);
     if (state) {
+      this.wasteReactions.update(state, now);
+      this.physicalEffects.update(state, now);
+      const map = state.terrain?.map;
+      if (map) this.geography(map);
       const tileSize = (state.terrain?.cell_size || 20) * UNIT;
+      if (map) {
+        const currentTiles = new Map((state.terrain?.tiles || []).map(tile => [tile.cell.join(","), tile]));
+        for (const cell of map.road_cells || []) {
+          if (currentTiles.get(cell.join(","))?.kind !== "road") {
+            this.rect(c, "#e1dbbd", cell[0] * tileSize, cell[1] * tileSize, tileSize, tileSize);
+          }
+        }
+      }
       for (const tile of state.terrain?.tiles || []) {
+        if (tile.facility) continue;
         const x = tile.cell[0] * tileSize, y = tile.cell[1] * tileSize;
         if (tile.kind === "road") {
+          if (map && tile.source === "sf_map") continue;
           this.rect(c, palette.path, x, y, tileSize, tileSize);
           this.rect(c, "#bca873", x + 2, y + 2, 2, 1);
         } else if (tile.kind === "floor") {
@@ -294,8 +403,9 @@ export class PixelWorld {
           this.rect(c, "#87714c", x + 1, y - 1, tileSize - 2, 1);
         }
       }
+      if (map) this.geography(map, true);
       const entities = [...state.objects, ...state.agents.filter(a => a.alive).map(a => ({ ...a, kind: "citizen" }))];
-      entities.sort((a, b) => a.position.y - b.position.y);
+      entities.sort((a, b) => a.position.y - b.position.y || Number(a.kind === "citizen") - Number(b.kind === "citizen"));
       for (const item of entities) {
         const x = Math.round(item.position.x * UNIT), y = Math.round(item.position.y * UNIT);
         if (item.kind === "citizen") {
@@ -311,10 +421,9 @@ export class PixelWorld {
           this.rect(c, "#d36043", x - 2, y - 2, 4, 4); this.rect(c, "#f4a275", x - 1, y - 2, 1, 1);
           this.rect(c, "#415d32", x, y - 4, 3, 2);
         } else if (item.kind === "remains") {
-          this.rect(c, "#5c584a", x - 5, y + 1, 11, 3);
-          this.rect(c, "#c2b879", x - 5, y - 2, 10, 4);
-          this.rect(c, "#756f52", x - 3, y - 1, 2, 2);
-          this.rect(c, "#756f52", x + 2, y - 1, 2, 2);
+          const frame = this.physicalEffects.fall(item, now, this.reducedMotion);
+          drawImpact(c, x, y, 0.5, frame, confirmedTrauma(item, state));
+          drawCitizen(c, x, y, 0.4, `fall-${frame}`);
           if (item.metadata.citizen_id === selectedId) this.label(item.metadata.citizen_name + " / deceased", x, y - 12, "#514439", "#f1dfbc");
         } else if (item.kind === "material") {
           this.rect(c, "#65563b", x - 3, y, 7, 3);
@@ -329,8 +438,7 @@ export class PixelWorld {
           this.rect(c, "#485353", x - 3, y - 4, 6, 9);
           this.rect(c, "#9fc4ab", x - 2, y - 3, 4, 6);
         } else if (item.kind === "waste") {
-          this.rect(c, "#684d32", x - 3, y, 7, 3); this.rect(c, "#876239", x - 2, y - 2, 5, 3);
-          this.rect(c, "#a08048", x, y - 4, 2, 3);
+          drawWaste(c, x, y, 0.8, this.physicalEffects.compression(item, now, this.reducedMotion));
         } else this.building(item);
       }
       if (brush) {
@@ -343,7 +451,7 @@ export class PixelWorld {
       // Public speech is painted above scenery; private thoughts never enter the map.
       for (const agent of state.agents.filter(a => a.alive && a.speech)) {
         const x = Math.max(70, Math.min(WIDTH - 70, agent.position.x * UNIT));
-        const y = Math.max(17, agent.position.y * UNIT - 20);
+        const y = Math.max(17, agent.position.y * UNIT - 31);
         const text = agent.speech.length > 30 ? `${agent.speech.slice(0, 27)}...` : agent.speech;
         this.label(text, x, y, "#3c402e", "#fff0c3");
         this.rect(c, "#fff0c3", x, y + 3, 3, 3);

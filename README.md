@@ -17,7 +17,7 @@ The world is authoritative: an LLM may choose any goal or say anything, but it c
 - Click-only citizen inspector with private memories and self-expressed values
 - Objective city event feed and persistent SQLite event history
 - Real-time browser rendering with no game engine installation
-- OpenAI Astra mode, with a clearly labeled rule demo when no key is configured
+- Novita DeepSeek and OpenAI Astra modes, with an explicitly labeled rule demo
 - Shops and scheduled free meal service, finite food stocks, portable goods and cooking
 - Timed work, cooking, cleaning, toilet use and indoor/outdoor rest with facility capacity
 - Vacant-bed rentals, bilateral roommate invitations, shared rent and a missed-rent warning
@@ -43,6 +43,86 @@ uv run uvicorn app.main:app --reload
 
 Open [http://localhost:8000](http://localhost:8000).
 
+## SF population baseline
+
+The server now defaults to `SOCIETY_SCENARIO=sf`. It generates a reproducible adult
+resident sample instead of repeating twelve preset life situations. `SOCIETY_AGENT_COUNT`
+still defaults to 12 (eight Mission residents and four South of Market residents),
+and `SOCIETY_SEED` defaults to 17. Increasing the live count increases model usage;
+the population generator itself is offline and makes no model calls.
+
+- Population and age: DataSF ACS **2019–2023**, totaling 79,129 residents, with
+  70,568 adults used as the sampling denominator. These are not 2026 counts.
+- Employment and broad occupations: SF Planning ACS **2016–2020** resident
+  marginals, explicitly treated as older age-16+ proxies for the adult sample.
+  Assignment is independent of age within neighborhood, not an observed joint distribution.
+- Workplaces: 19 sourced examples across technology and non-tech sectors, with
+  historical SF-city counts kept separate from unknown office counts. Four contextual
+  locations are outside the resident analysis neighborhoods. Occupation-to-industry
+  mapping and the at-most-25% named-example allocation are labeled scenario assumptions;
+  this is **not** allocation proportional to measured company staffing.
+- Personal backgrounds are private, included in every Astra decision and saved as
+  individual memories. No values, career ambitions or life goals are assigned by census group.
+- The observer's **Population calibration** panel shows dates, counts, sources and
+  limitations. Click a citizen for their private background. Real reference employers
+  are separate from companies that citizens create during play.
+- Scripted prototype layoffs, phantom street fairs and rent-rumor broadcasts are disabled
+  in this scenario. Physical survival, conversations and player interventions still work.
+
+The playable map remains **schematic**, and credits, wages, rooms and opening hours
+remain game assumptions. Household structure, real rents, inbound commuters, a full
+employer census and measured company-level staffing are not yet calibrated. The
+[actual street reference](docs/maps/soma-mission-reference.svg) is not yet the playable map.
+Multi-project life planning and full world save/resume also remain separate work.
+
+See [population methodology](docs/sf-population-sources.md) and
+[employer evidence](docs/sf-employer-sources.md). Set `SOCIETY_SCENARIO=prototype`
+to use the old fixture city; direct `World(...)` construction retains that default
+for existing mechanics tests.
+
+Validate a disposable preview without model calls, or add a bounded real-Astra run:
+
+```sh
+uv run --with playwright python scripts/smoke_sf_population.py --url http://127.0.0.1:8003
+uv run --with playwright python scripts/smoke_sf_population.py --url http://127.0.0.1:8003 --seconds 60
+```
+
+The live check resumes and then pauses only its target server, without staging goals
+or interventions. It verifies integration, not long-run emergence or consciousness.
+
+## Enable Novita DeepSeek citizens
+
+The active local configuration uses **Novita DeepSeek V4 Pro 0813**. Keep credentials on
+the server; never put them in browser code. Set these in `.env`:
+
+```dotenv
+SOCIETY_LLM_PROVIDER=novita
+NOVITA_MODEL=deepseek/deepseek-v4-pro-0813
+NOVITA_API_KEY=your_novita_key
+```
+
+Or leave `NOVITA_API_KEY` unset and configure `NOVITA_SECRET_ID`, `AWS_REGION`, and
+`NOVITA_SECRET_FIELD` (the JSON field holding the credential; defaults to
+`NOVITA_API_KEY`). The configured local AWS secret uses `api_key`. A plain-text
+secret value is also supported. Novita never reads or forwards the OpenAI key.
+
+The integration follows [Novita's model endpoint](https://novita.ai/models-console/model-detail/deepseek-deepseek-v4-pro-0813)
+and [structured-output interface](https://docs.novita.ai/guides/llm-structured-outputs):
+`https://api.novita.ai/openai` and Chat Completions. The V4 Pro endpoint currently
+rejects `json_schema` despite its catalog listing, so V4 uses `json_object` with
+the schema in its prompt and mandatory local validation. V4 uses its default
+reasoning mode with an 8,192-token completion budget and a 120-second timeout.
+Other Novita models retain the `json_schema` request format. Both model
+providers receive the same private history and action rules. Responses are validated
+locally before execution; truncated, empty or invalid decisions fail and retry,
+without silently switching providers or generating scripted behavior.
+
+The UI and `/api/health` report the selected model; decision records retain the
+`novita` source. `stats.llm_decisions` counts LLM decisions while the existing
+`astra_decisions` field remains Astra-specific. Set `SOCIETY_LLM_PROVIDER=local`
+for an explicit offline rule demo. A selected Novita provider without credentials
+fails startup instead of silently falling back.
+
 ## Enable OpenAI Astra citizens
 
 Create an API key at [platform.openai.com](https://platform.openai.com/), then configure the server:
@@ -56,6 +136,7 @@ Set the key in `.env`:
 ```dotenv
 OPENAI_API_KEY=your_api_key_here
 OPENAI_MODEL=gpt-6-astra
+SOCIETY_LLM_PROVIDER=openai
 ```
 
 Restart the server. The header will display `ASTRA / LIVE` when real LLM decisions are active. API keys remain server-side and `.env` is excluded from git.

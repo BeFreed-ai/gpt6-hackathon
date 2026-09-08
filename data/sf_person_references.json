@@ -1,0 +1,1665 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-09-08",
+  "scope": "98 distinct public professional counterparts, plus two separately sourced public-figure cast members in public_figure_backgrounds.json.",
+  "notice": "These are public professional references for fictional characters, not a register of actual residents or employees. Sources establish only the listed career facts at their stated dates. Synthetic ages, work status, workplaces, housing, finances, childhood and recent events are not facts or inferences about the referenced people. No private contact details are collected.",
+  "selection_basis": "Convenience selection from publicly accessible institutional biographies, first-person professional interviews and official career recognitions. Bay Area professional connections do not establish current SF residence. Coverage is neither representative nor an employer staffing survey.",
+  "sources": {
+    "jane_jih": {
+      "url": "https://profiles.ucsf.edu/jane.jih",
+      "title": "UCSF professional profile: Jane Jih",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "michael_potter": {
+      "url": "https://profiles.ucsf.edu/michael.potter",
+      "title": "UCSF professional profile: Michael Potter",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "andrea_jackson": {
+      "url": "https://profiles.ucsf.edu/andrea.jackson",
+      "title": "UCSF professional profile: Andrea Jackson",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "christopher_greger": {
+      "url": "https://www.ccsf.edu/directory/christopher-greger",
+      "title": "CCSF directory: Christopher Greger",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "claudia_silva": {
+      "url": "https://fog.ccsf.edu/~cdasilva/bio.htm",
+      "title": "CCSF faculty biography: Claudia P. Ferreira Da Silva",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "kristin_smith": {
+      "url": "https://fog.ccsf.edu/~kmsmith/",
+      "title": "Historical CCSF faculty page: Kristin M. Smith",
+      "published": "2008",
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "lisa_vega": {
+      "url": "https://blog.dandelionchocolate.com/2017/09/11/four-years-in/",
+      "title": "Dandelion first-person professional retrospective",
+      "published": "2017-09-11",
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "todd_masonis": {
+      "url": "https://blog.dandelionchocolate.com/2026/01/06/the-year-in-review-with-todd/",
+      "title": "Dandelion founder interview: 2025 review",
+      "published": "2026-01-06",
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "carla_short": {
+      "url": "https://sfpublicworks.org/node/37",
+      "title": "SF Public Works director biography",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "michael_lambert": {
+      "url": "https://sfpl.org/about-us/library-administration/michael-lambert-city-librarian",
+      "title": "SFPL city librarian biography",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "david_chiu": {
+      "url": "https://www.sfcityattorney.org/aboutus/thecityattorney/",
+      "title": "SF City Attorney professional biography",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "julia_laue": {
+      "url": "https://sfpublicworks.org/calendar/julia-laue-named-san-franciscos-new-city-architect",
+      "title": "SF Public Works city architect appointment",
+      "published": "2024-12-30",
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "joanne_saxe": {
+      "url": "https://profiles.ucsf.edu/joanne.saxe",
+      "title": "UCSF professional profile: Joanne Saxe",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "kt_waxman": {
+      "url": "https://profiles.ucsf.edu/kt.waxman",
+      "title": "UCSF professional profile: Kt Waxman",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "la_cocina_staff": {
+      "url": "https://www.lacocinasf.org/people",
+      "title": "La Cocina official staff biographies",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "foodbank_management": {
+      "url": "https://www.sfmfoodbank.org/management-team/",
+      "title": "SF-Marin Food Bank official management biographies",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "foodbank_board": {
+      "url": "https://www.sfmfoodbank.org/board-of-directors/",
+      "title": "SF-Marin Food Bank official board biographies",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "publicworks_awards": {
+      "url": "https://sfpublicworks.org/sites/default/files/2025%20Public%20Works%20Employee%20Recognition%20Program.pdf",
+      "title": "SF Public Works 2025 recognition program",
+      "published": "2025-04-29",
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "soundbox_2021": {
+      "url": "https://www.sfsymphony.org/SanFrancisco/media/SanFrancisco/Press%20Room/Press%20Kits/soundbox/Digital%20SoundBox%202021/Digital-Program-Book_SoundBox_Focus_Nico-Muhly_2021-08-12.pdf",
+      "title": "SF Symphony historical SoundBox musician biographies",
+      "published": "2021-08-12",
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "la_cocina_gala": {
+      "url": "https://20th.lacocinasf.org/overview",
+      "title": "La Cocina anniversary participating-chef biographies",
+      "published": "2025",
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "amanda_renteria": {
+      "url": "https://codeforamerica.org/people/amanda-renteria/",
+      "title": "Code for America: Amanda Renteria",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "rebecca_piazza": {
+      "url": "https://codeforamerica.org/people/rebecca-piazza/",
+      "title": "Code for America: Rebecca Piazza",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "elaine_watt": {
+      "url": "https://codeforamerica.org/people/elaine-watt/",
+      "title": "Code for America: Elaine Watt",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "jonathan_porat": {
+      "url": "https://codeforamerica.org/news/code-for-america-names-new-cto/",
+      "title": "Code for America CTO appointment",
+      "published": "2026-05-06",
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "yasmin_fodil": {
+      "url": "https://codeforamerica.org/news/forward-focus-yasmin-fodil-chief-of-staff/",
+      "title": "Code for America first-person career interview",
+      "published": "2024-02-23",
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "aurelle_amram": {
+      "url": "https://codeforamerica.org/people/aurelle-amram/",
+      "title": "Code for America: Aurelle Amram",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "jana_rhyu": {
+      "url": "https://codeforamerica.org/people/jana-rhyu/",
+      "title": "Code for America: Jana Rhyu",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "localdata": {
+      "url": "https://localdata.com/about.html",
+      "title": "LocalData founders' professional biographies",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "sfmta_staff": {
+      "url": "https://www.sfmta.com/blog/celebrating-heart-our-system-today-transit-employee-appreciation-day",
+      "title": "SFMTA employee professional interviews",
+      "published": "2026-03-18",
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "sfmta_grips": {
+      "url": "https://www.sfmta.com/blog/muni-welcomes-two-new-women-cable-car-grips",
+      "title": "SFMTA new cable-car operator announcement",
+      "published": "2024-10-01",
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "jakub_pachocki": {
+      "url": "https://openai.com/index/jakub-pachocki-announced-as-chief-scientist/",
+      "title": "OpenAI chief-scientist appointment",
+      "published": "2024-05-14",
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "mark_chen": {
+      "url": "https://openai.com/index/leadership-updates-march-2025/",
+      "title": "OpenAI research-leadership appointment",
+      "published": "2025-03-24",
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "linda_franck": {
+      "url": "https://profiles.ucsf.edu/linda.franck",
+      "title": "UCSF professional profile: Linda Franck",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "catherine_dodd": {
+      "url": "https://nursing.ucsf.edu/scienceofcaring/news/three-nurses-tell-tales-their-cities-health",
+      "title": "UCSF nursing professional interview",
+      "published": "2015",
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "hannah_glass": {
+      "url": "https://profiles.ucsf.edu/hannah.glass",
+      "title": "UCSF professional profile: Hannah Glass",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "pete_mulvihill": {
+      "url": "https://greenapplebooks.com/about-us",
+      "title": "Green Apple Books official business history",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "kevin_ryan": {
+      "url": "https://greenapplebooks.com/about-us",
+      "title": "Green Apple Books official business history",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "renee_mehra": {
+      "url": "https://profiles.ucsf.edu/renee.mehra",
+      "title": "UCSF professional profile: Renee Mehra",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "caryl_gay": {
+      "url": "https://profiles.ucsf.edu/caryl.gay",
+      "title": "UCSF professional profile: Caryl Gay",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    },
+    "dan_nobuhiko_smiley": {
+      "url": "https://www.sfsymphony.org/Data/Event-Data/Artists/S/Dan-Nobuhiko-Smiley",
+      "title": "SF Symphony historical violinist biography",
+      "published": null,
+      "accessed": "2026-09-08",
+      "type": "primary_public_professional_record"
+    }
+  },
+  "people": [
+    {
+      "id": "jane_jih",
+      "name": "Jane Jih",
+      "domain": "healthcare",
+      "source_id": "jane_jih",
+      "public_career_facts": [
+        "UCSF lists a general-internal-medicine clinical and research practice.",
+        "Directs the Asian American Research Center on Health."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "michael_potter",
+      "name": "Michael Potter",
+      "domain": "healthcare",
+      "source_id": "michael_potter",
+      "public_career_facts": [
+        "Earned a Harvard medical degree in 1990 and completed UCSF residency in 1993.",
+        "Joined UCSF faculty in 1994; the profile identifies an emeritus appointment."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "andrea_jackson",
+      "name": "Andrea Jackson",
+      "domain": "healthcare",
+      "source_id": "andrea_jackson",
+      "public_career_facts": [
+        "Studied engineering at Cornell, then earned a Harvard medical degree in 2007.",
+        "Completed obstetrics residency in 2011 and UCSF fellowship training in 2013."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "christopher_greger",
+      "name": "Christopher Greger",
+      "domain": "education",
+      "source_id": "christopher_greger",
+      "public_career_facts": [
+        "CCSF identifies an English teaching appointment.",
+        "Earned a Berkeley bachelor's degree and an NYU English doctorate."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "claudia_p_ferreira_da_silva",
+      "name": "Claudia P. Ferreira Da Silva",
+      "domain": "education",
+      "source_id": "claudia_silva",
+      "public_career_facts": [
+        "Worked in information technology from 1985 across programming, analysis and project management.",
+        "Completed an adult-education master's in 2005 and began full-time teaching in late 2007."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "kristin_m_smith",
+      "name": "Kristin M. Smith",
+      "domain": "education",
+      "source_id": "kristin_smith",
+      "public_career_facts": [
+        "The 2008 faculty page records joining CCSF English that year.",
+        "Earned English bachelor's and master's degrees at UNC Wilmington."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "lisa_vega",
+      "name": "Lisa Vega",
+      "domain": "food_hospitality",
+      "source_id": "lisa_vega",
+      "public_career_facts": [
+        "Joined Dandelion in 2013 after twelve years working in fine dining.",
+        "Helped develop its pastry program and coauthored Making Chocolate."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "todd_masonis",
+      "name": "Todd Masonis",
+      "domain": "food_hospitality",
+      "source_id": "todd_masonis",
+      "public_career_facts": [
+        "Dandelion's founder describes the company's chocolate-making and confectionery work.",
+        "The 2025 retrospective discusses expansion of production after its pandemic changes."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "carla_short",
+      "name": "Carla Short",
+      "domain": "public_admin",
+      "source_id": "carla_short",
+      "public_career_facts": [
+        "Joined San Francisco as urban forester in 2004 and became operations deputy in 2019.",
+        "Served as interim director from 2021 before appointment as director in November 2023."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "michael_lambert",
+      "name": "Michael Lambert",
+      "domain": "public_admin",
+      "source_id": "michael_lambert",
+      "public_career_facts": [
+        "Began library work in Columbia and later worked in Charlotte-Mecklenburg and San Mateo County.",
+        "Became San Francisco city librarian in March 2019."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "david_chiu",
+      "name": "David Chiu",
+      "domain": "public_admin",
+      "source_id": "david_chiu",
+      "public_career_facts": [
+        "Legal work included prosecution, civil-rights practice, a judicial clerkship and a technology-company counsel role.",
+        "Served on the SF Board of Supervisors and in the California Assembly before becoming city attorney."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "julia_laue",
+      "name": "Julia Laue",
+      "domain": "public_admin",
+      "source_id": "julia_laue",
+      "public_career_facts": [
+        "The 2024 announcement records twelve years with the department.",
+        "Previously led its architecture bureau before appointment as city architect."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "joanne_saxe",
+      "name": "Joanne Saxe",
+      "domain": "healthcare",
+      "source_id": "joanne_saxe",
+      "public_career_facts": [
+        "UCSF lists an emeritus community-health-systems nursing appointment.",
+        "The professional account describes primary-care nursing practice and graduate-curriculum development."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "kt_waxman",
+      "name": "Kt Waxman",
+      "domain": "healthcare",
+      "source_id": "kt_waxman",
+      "public_career_facts": [
+        "Joined UCSF in 2021.",
+        "Previously spent twelve years at USF leading its executive-leadership nursing doctorate program."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "aniela_valtierra",
+      "name": "Aniela Valtierra",
+      "domain": "food_hospitality",
+      "source_id": "la_cocina_staff",
+      "public_career_facts": [
+        "Joined in 2013.",
+        "Previously deputy director."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "emiliana_puyana",
+      "name": "Emiliana Puyana",
+      "domain": "food_hospitality",
+      "source_id": "la_cocina_staff",
+      "public_career_facts": [
+        "Culinary Institute graduate.",
+        "Founded Jarred SF Brine."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "blake_kutner",
+      "name": "Blake Kutner",
+      "domain": "food_hospitality",
+      "source_id": "la_cocina_staff",
+      "public_career_facts": [
+        "Dartmouth graduate, 1994.",
+        "Previously waiter and cook."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "walter_miros",
+      "name": "Walter Miros",
+      "domain": "food_hospitality",
+      "source_id": "la_cocina_staff",
+      "public_career_facts": [
+        "Studied philosophy.",
+        "Worked in fine dining."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "sabrina_mclean",
+      "name": "Sabrina McLean",
+      "domain": "food_hospitality",
+      "source_id": "la_cocina_staff",
+      "public_career_facts": [
+        "Hostess in 2017.",
+        "Later executive sous chef."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "arielle_helffrich",
+      "name": "Arielle Helffrich",
+      "domain": "professional_services",
+      "source_id": "la_cocina_staff",
+      "public_career_facts": [
+        "Studied at Vermont.",
+        "Previously managed nonprofit events."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "swan_spikes",
+      "name": "Swan Spikes",
+      "domain": "retail_personal",
+      "source_id": "la_cocina_staff",
+      "public_career_facts": [
+        "Founded Togun Wines.",
+        "Co-opened Kinfolx."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "michelle_magat",
+      "name": "Michelle Magat",
+      "domain": "professional_services",
+      "source_id": "la_cocina_staff",
+      "public_career_facts": [
+        "Journalism master's degree.",
+        "Cofounded communications businesses."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "naomi_maisel",
+      "name": "Naomi Maisel",
+      "domain": "food_hospitality",
+      "source_id": "la_cocina_staff",
+      "public_career_facts": [
+        "Studied gastronomy.",
+        "Joined in 2020."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "laura_mcgrath",
+      "name": "Laura McGrath",
+      "domain": "food_hospitality",
+      "source_id": "la_cocina_staff",
+      "public_career_facts": [
+        "Started washing dishes.",
+        "Later ran catering business."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "kenia_perez",
+      "name": "Kenia Perez",
+      "domain": "retail_personal",
+      "source_id": "la_cocina_staff",
+      "public_career_facts": [
+        "Studied communications.",
+        "Previously counselor and paralegal."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "shani_rollins",
+      "name": "Shani Rollins",
+      "domain": "food_hospitality",
+      "source_id": "la_cocina_staff",
+      "public_career_facts": [
+        "CCSF culinary studies.",
+        "Worked front-of-house."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "hernan_martinez",
+      "name": "Hernán Martinez",
+      "domain": "food_hospitality",
+      "source_id": "la_cocina_staff",
+      "public_career_facts": [
+        "2015 Ment'Or grant.",
+        "Later managed events."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "valerie_ng",
+      "name": "Valerie Ng",
+      "domain": "professional_services",
+      "source_id": "la_cocina_staff",
+      "public_career_facts": [
+        "Worked at Hodo Foods.",
+        "Also worked at Torani."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "sarah_lau",
+      "name": "Sarah Lau",
+      "domain": "professional_services",
+      "source_id": "la_cocina_staff",
+      "public_career_facts": [
+        "CCSF hospitality studies.",
+        "Moved from kitchens into HR."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "mimi_lim",
+      "name": "Mimi Lim",
+      "domain": "professional_services",
+      "source_id": "la_cocina_staff",
+      "public_career_facts": [
+        "Senior accountant.",
+        "Volunteered at urban farms."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "stephanie_goss",
+      "name": "Stephanie Goss",
+      "domain": "professional_services",
+      "source_id": "la_cocina_staff",
+      "public_career_facts": [
+        "Bucknell graduate.",
+        "Previously worked in wine."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "ray_stubblefield_tave",
+      "name": "Ray Stubblefield-Tave",
+      "domain": "professional_services",
+      "source_id": "la_cocina_staff",
+      "public_career_facts": [
+        "Nonprofit development work.",
+        "Experience in arts organizations."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "tanis_crosby",
+      "name": "Tanis Crosby",
+      "domain": "professional_services",
+      "source_id": "foodbank_management",
+      "public_career_facts": [
+        "Joined in 2021.",
+        "Previously led YWCAs."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "barbara_abbott",
+      "name": "Barbara Abbott",
+      "domain": "retail_personal",
+      "source_id": "foodbank_management",
+      "public_career_facts": [
+        "Joined in 2009.",
+        "Previously managed packaged-goods accounts and sales."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "michael_braude",
+      "name": "Michael Braude",
+      "domain": "professional_services",
+      "source_id": "foodbank_management",
+      "public_career_facts": [
+        "Joined in 2000.",
+        "Became CFO in 2004."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "sean_brooks",
+      "name": "Sean Brooks",
+      "domain": "professional_services",
+      "source_id": "foodbank_management",
+      "public_career_facts": [
+        "Joined in 1996.",
+        "Expanded Marin programming after the 2008 recession."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "lindsy_carpenter",
+      "name": "Lindsy Carpenter",
+      "domain": "professional_services",
+      "source_id": "foodbank_management",
+      "public_career_facts": [
+        "Previously YWCA operations leader.",
+        "Earned NYU urban-planning master's."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "antony_d_angelus",
+      "name": "Antony D'Angelus",
+      "domain": "professional_services",
+      "source_id": "foodbank_management",
+      "public_career_facts": [
+        "Joined in May 2025.",
+        "Previously led employee relations at International Rescue Committee."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "chris_padula",
+      "name": "Chris Padula",
+      "domain": "professional_services",
+      "source_id": "foodbank_management",
+      "public_career_facts": [
+        "Leads philanthropy and engagement.",
+        "Previously GLIDE development chief."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "maxwell_titsworth",
+      "name": "Maxwell Titsworth",
+      "domain": "tech",
+      "source_id": "foodbank_management",
+      "public_career_facts": [
+        "Joined analytics in 2022.",
+        "Previously senior manager at Accenture."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "michael_wirkkala",
+      "name": "Michael Wirkkala",
+      "domain": "other",
+      "source_id": "foodbank_management",
+      "public_career_facts": [
+        "Joined supply-chain leadership in 2018.",
+        "Became operations chief in July 2019."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "tara_seracka",
+      "name": "Tara Seracka",
+      "domain": "professional_services",
+      "source_id": "foodbank_board",
+      "public_career_facts": [
+        "Fastly legal executive.",
+        "Previously Meraki counsel."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "ashley_cheun_sridhar",
+      "name": "Ashley Cheun Sridhar",
+      "domain": "professional_services",
+      "source_id": "foodbank_board",
+      "public_career_facts": [
+        "Google executive recruiter.",
+        "Previously recruited at Meta."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "alok_agrawal",
+      "name": "Alok Agrawal",
+      "domain": "professional_services",
+      "source_id": "foodbank_board",
+      "public_career_facts": [
+        "Former Celestica strategy executive.",
+        "Previously Johnson Controls leader."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "gia_daniller_katz",
+      "name": "Gia Daniller-Katz",
+      "domain": "professional_services",
+      "source_id": "foodbank_board",
+      "public_career_facts": [
+        "Founded Daniller Consulting.",
+        "Previously government-affairs director."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "hugo_de_la_torre",
+      "name": "Hugo De La Torre",
+      "domain": "professional_services",
+      "source_id": "foodbank_board",
+      "public_career_facts": [
+        "Docusign accounting chief.",
+        "Cal State LA graduate."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "cynthia_gaylor",
+      "name": "Cynthia Gaylor",
+      "domain": "professional_services",
+      "source_id": "foodbank_board",
+      "public_career_facts": [
+        "Former DocuSign CFO.",
+        "Previously led Twitter acquisitions."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "jonathan_goldman",
+      "name": "Jonathan Goldman",
+      "domain": "professional_services",
+      "source_id": "foodbank_board",
+      "public_career_facts": [
+        "Joined Silverado in 2003.",
+        "Previously Bank of America trader."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "michelle_griffin",
+      "name": "Michelle Griffin",
+      "domain": "professional_services",
+      "source_id": "foodbank_board",
+      "public_career_facts": [
+        "Independent consultant.",
+        "Previously FCB strategy executive."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "john_lyons",
+      "name": "John Lyons",
+      "domain": "retail_personal",
+      "source_id": "foodbank_board",
+      "public_career_facts": [
+        "Retired research salesperson.",
+        "Worked at Merrill Lynch."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "max_rettig",
+      "name": "Max Rettig",
+      "domain": "public_admin",
+      "source_id": "foodbank_board",
+      "public_career_facts": [
+        "DoorDash policy leader.",
+        "Previously State Department attorney."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "beth_roy_jenkyn",
+      "name": "Beth Roy Jenkyn",
+      "domain": "professional_services",
+      "source_id": "foodbank_board",
+      "public_career_facts": [
+        "Former McKinsey consultant.",
+        "Now volunteers professional consulting."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "jeff_schoppert",
+      "name": "Jeff Schoppert",
+      "domain": "professional_services",
+      "source_id": "foodbank_board",
+      "public_career_facts": [
+        "Retired litigator.",
+        "Previously managing law-firm partner."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "jonathan_walker",
+      "name": "Jonathan Walker",
+      "domain": "professional_services",
+      "source_id": "foodbank_board",
+      "public_career_facts": [
+        "Retired economic consultant.",
+        "MIT economics doctorate."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "michael_abella",
+      "name": "Michael Abella",
+      "domain": "public_admin",
+      "source_id": "publicworks_awards",
+      "public_career_facts": [
+        "Construction-management team recognition.",
+        "Ten-year service recognition."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "damon_lai",
+      "name": "Damon Lai",
+      "domain": "public_admin",
+      "source_id": "publicworks_awards",
+      "public_career_facts": [
+        "Materials-testing team recognition.",
+        "Ten-year service recognition."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "oliver_iberien",
+      "name": "Oliver Iberien",
+      "domain": "public_admin",
+      "source_id": "publicworks_awards",
+      "public_career_facts": [
+        "Regulatory-affairs team recognition.",
+        "Ten-year service recognition."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "kouchieh_lin",
+      "name": "Kouchieh Lin",
+      "domain": "public_admin",
+      "source_id": "publicworks_awards",
+      "public_career_facts": [
+        "Architecture-services team recognition.",
+        "Five-year service recognition."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "malachi_guzman",
+      "name": "Malachi Guzman",
+      "domain": "public_admin",
+      "source_id": "publicworks_awards",
+      "public_career_facts": [
+        "Materials-testing team recognition.",
+        "Five-year service recognition."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "suzanne_leon",
+      "name": "Suzanne Leon",
+      "domain": "arts_recreation",
+      "source_id": "soundbox_2021",
+      "public_career_facts": [
+        "Curtis graduate; formerly Paris concertmaster.",
+        "Joined SF Symphony in 1990."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "amy_hiraga",
+      "name": "Amy Hiraga",
+      "domain": "arts_recreation",
+      "source_id": "soundbox_2021",
+      "public_career_facts": [
+        "Former Metropolitan Opera musician.",
+        "Rejoined SF Symphony in 1999."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "jonathan_vinocour",
+      "name": "Jonathan Vinocour",
+      "domain": "arts_recreation",
+      "source_id": "soundbox_2021",
+      "public_career_facts": [
+        "Princeton chemistry graduate and conservatory-trained violist.",
+        "Joined SF Symphony as principal viola in 2009."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "barbara_andres",
+      "name": "Barbara Andres",
+      "domain": "arts_recreation",
+      "source_id": "soundbox_2021",
+      "public_career_facts": [
+        "Cleveland Institute of Music graduate.",
+        "Joined SF Symphony in 1977."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "james_lee_wyatt_iii",
+      "name": "James Lee Wyatt III",
+      "domain": "arts_recreation",
+      "source_id": "soundbox_2021",
+      "public_career_facts": [
+        "Previously Honolulu principal percussionist.",
+        "Joined SF Symphony in 2001."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "kim_alter",
+      "name": "Kim Alter",
+      "domain": "food_hospitality",
+      "source_id": "la_cocina_gala",
+      "public_career_facts": [
+        "Leads Nightbird.",
+        "Previously led Haven and Plum kitchens."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "elizabeth_falkner",
+      "name": "Elizabeth Falkner",
+      "domain": "food_hospitality",
+      "source_id": "la_cocina_gala",
+      "public_career_facts": [
+        "Previously ran San Francisco restaurants.",
+        "Later opened restaurants in New York."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "preeti_mistry",
+      "name": "Preeti Mistry",
+      "domain": "food_hospitality",
+      "source_id": "la_cocina_gala",
+      "public_career_facts": [
+        "Cofounded Juhu Beach Club.",
+        "Launched Loading Dock Talks in 2021."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "melissa_perello",
+      "name": "Melissa Perello",
+      "domain": "food_hospitality",
+      "source_id": "la_cocina_gala",
+      "public_career_facts": [
+        "Opened Frances in 2009.",
+        "Opened Octavia in 2015."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "sarah_rich",
+      "name": "Sarah Rich",
+      "domain": "food_hospitality",
+      "source_id": "la_cocina_gala",
+      "public_career_facts": [
+        "Previously worked at Bouley and Coi.",
+        "Opened Rich Table in 2012."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "craig_stoll",
+      "name": "Craig Stoll",
+      "domain": "food_hospitality",
+      "source_id": "la_cocina_gala",
+      "public_career_facts": [
+        "Trained at the Culinary Institute of America.",
+        "Opened Delfina in 1998."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "annie_stoll",
+      "name": "Annie Stoll",
+      "domain": "food_hospitality",
+      "source_id": "la_cocina_gala",
+      "public_career_facts": [
+        "Cofounded Delfina in 1998.",
+        "Led front-of-house hiring and training."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "amanda_renteria",
+      "name": "Amanda Renteria",
+      "domain": "public_admin",
+      "source_id": "amanda_renteria",
+      "public_career_facts": [
+        "Previously served as a US Senate chief of staff and California justice-department operations executive.",
+        "The organization identifies her as its CEO."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "rebecca_piazza",
+      "name": "Rebecca Piazza",
+      "domain": "public_admin",
+      "source_id": "rebecca_piazza",
+      "public_career_facts": [
+        "Previously led 18F and program delivery at Nava.",
+        "Worked at USDA Food and Nutrition Service before joining Code for America."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "elaine_watt",
+      "name": "Elaine Watt",
+      "domain": "professional_services",
+      "source_id": "elaine_watt",
+      "public_career_facts": [
+        "Previously worked as a retreat-center accounting manager and CFO.",
+        "Later served as Emerge America's CFO before Code for America finance leadership."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "jonathan_porat",
+      "name": "Jonathan Porat",
+      "domain": "tech",
+      "source_id": "jonathan_porat",
+      "public_career_facts": [
+        "Previously California's CTO, with earlier Seattle and federal technology work.",
+        "Appointed Code for America CTO with a June 1, 2026 start date."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "yasmin_fodil",
+      "name": "Yasmin Fodil",
+      "domain": "professional_services",
+      "source_id": "yasmin_fodil",
+      "public_career_facts": [
+        "Early work included arts-education planning for New York City's education department.",
+        "Later taught digital innovation to NYU public-administration students."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "aurelle_amram",
+      "name": "Aurelle Amram",
+      "domain": "professional_services",
+      "source_id": "aurelle_amram",
+      "public_career_facts": [
+        "Previously worked in financial consulting and as a director at Third Sector.",
+        "Studied economics and sociology at NYU and earned an MIT MBA."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "jana_rhyu",
+      "name": "Jana Rhyu",
+      "domain": "tech",
+      "source_id": "jana_rhyu",
+      "public_career_facts": [
+        "Earlier roles included account management, sales and marketing operations.",
+        "Worked at LoopUp, Apollo Group and Humboldt before Code for America."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "matt_hampel",
+      "name": "Matt Hampel",
+      "domain": "tech",
+      "source_id": "localdata",
+      "public_career_facts": [
+        "Previously managed technology projects at the University of Michigan.",
+        "Cofounded LocalData after civic-technology work."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "alicia_rouault",
+      "name": "Alicia Rouault",
+      "domain": "tech",
+      "source_id": "localdata",
+      "public_career_facts": [
+        "Urban planner and former Code for America fellow.",
+        "Worked with San Francisco's economic-development office and cofounded LocalData."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "prashant_singh",
+      "name": "Prashant Singh",
+      "domain": "tech",
+      "source_id": "localdata",
+      "public_career_facts": [
+        "Previously built Microsoft television products.",
+        "Cofounded LocalData after a Code for America fellowship."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "singh_balraj_rai",
+      "name": "Singh Balraj Rai",
+      "domain": "other",
+      "source_id": "sfmta_staff",
+      "public_career_facts": [
+        "Cable-car operator.",
+        "Recognized for sustained safe driving."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "gary_merritt",
+      "name": "Gary Merritt",
+      "domain": "other",
+      "source_id": "sfmta_staff",
+      "public_career_facts": [
+        "Muni operator.",
+        "Recognized for meeting its safe-driving standard."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "jeena_villamor",
+      "name": "Jeena Villamor",
+      "domain": "other",
+      "source_id": "sfmta_staff",
+      "public_career_facts": [
+        "Muni mechanic.",
+        "Works on historic streetcars."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "michael_henry",
+      "name": "Michael Henry",
+      "domain": "other",
+      "source_id": "sfmta_staff",
+      "public_career_facts": [
+        "Chief mechanical officer.",
+        "Participated in a Galileo High School career fair."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "austin_stenger",
+      "name": "Austin Stenger",
+      "domain": "other",
+      "source_id": "sfmta_staff",
+      "public_career_facts": [
+        "Bus-maintenance operations manager.",
+        "Oversees round-the-clock fleet maintenance."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "annie_washington",
+      "name": "Annie Washington",
+      "domain": "other",
+      "source_id": "sfmta_grips",
+      "public_career_facts": [
+        "Certified as a cable-car grip in the 2024 announcement.",
+        "Certification followed a month of training and a final exam."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "chanelle_smith",
+      "name": "Chanelle Smith",
+      "domain": "other",
+      "source_id": "sfmta_grips",
+      "public_career_facts": [
+        "Certified as a cable-car grip in the 2024 announcement.",
+        "Certification followed a month of training and a final exam."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "jakub_pachocki",
+      "name": "Jakub Pachocki",
+      "domain": "tech",
+      "source_id": "jakub_pachocki",
+      "public_career_facts": [
+        "Joined OpenAI research in 2017 after a Carnegie Mellon theoretical-computer-science doctorate.",
+        "Previously directed research on GPT-4 and OpenAI Five before becoming chief scientist."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null,
+      "preferred_workplace": "openai_mission_bay"
+    },
+    {
+      "id": "mark_chen",
+      "name": "Mark Chen",
+      "domain": "tech",
+      "source_id": "mark_chen",
+      "public_career_facts": [
+        "The announcement describes progression from research into research leadership.",
+        "Took an expanded chief-research-officer role in March 2025."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null,
+      "preferred_workplace": "openai_mission_bay"
+    },
+    {
+      "id": "linda_franck",
+      "name": "Linda Franck",
+      "domain": "healthcare",
+      "source_id": "linda_franck",
+      "public_career_facts": [
+        "Completed UCSF nursing master's and doctoral degrees in 1983 and 1995.",
+        "Completed an implementation-science certificate in 2020."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "catherine_dodd",
+      "name": "Catherine Dodd",
+      "domain": "healthcare",
+      "source_id": "catherine_dodd",
+      "public_career_facts": [
+        "Earned UCSF nursing degrees in 1979 and 1983 and a sociology doctorate in 2007.",
+        "The historical interview describes directing San Francisco's employee health-benefits system."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "hannah_glass",
+      "name": "Hannah Glass",
+      "domain": "healthcare",
+      "source_id": "hannah_glass",
+      "public_career_facts": [
+        "Earned a McGill medical degree in 2001 and completed Calgary neurology training in 2006.",
+        "Joined UCSF child neurology in 2006 and earned a clinical-research master's in 2008."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "pete_mulvihill",
+      "name": "Pete Mulvihill",
+      "domain": "retail_personal",
+      "source_id": "pete_mulvihill",
+      "public_career_facts": [
+        "Worked at Green Apple before becoming a co-owner.",
+        "Participated in the gradual employee buyout that began in 1999."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "kevin_ryan",
+      "name": "Kevin Ryan",
+      "domain": "retail_personal",
+      "source_id": "kevin_ryan",
+      "public_career_facts": [
+        "Worked at Green Apple before becoming a co-owner.",
+        "Participated in the gradual employee buyout that began in 1999."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "renee_mehra",
+      "name": "Renee Mehra",
+      "domain": "healthcare",
+      "source_id": "renee_mehra",
+      "public_career_facts": [
+        "Completed an epidemiology master's in London in 2009.",
+        "Earned a Yale public-health doctorate in 2020."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "caryl_gay",
+      "name": "Caryl Gay",
+      "domain": "healthcare",
+      "source_id": "caryl_gay",
+      "public_career_facts": [
+        "Earned a Michigan psychology bachelor's in 1989 and Miami clinical-psychology doctorate in 1995.",
+        "Completed pediatric-psychology postdoctoral training in 1997."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    },
+    {
+      "id": "dan_nobuhiko_smiley",
+      "name": "Dan Nobuhiko Smiley",
+      "domain": "arts_recreation",
+      "source_id": "dan_nobuhiko_smiley",
+      "public_career_facts": [
+        "Joined the orchestra in 1990.",
+        "The retrospective describes playing Haydn with Leonard Slatkin in 2007; it does not establish current employment."
+      ],
+      "actual_age": null,
+      "actual_residence": null,
+      "actual_household": null,
+      "actual_finances": null
+    }
+  ]
+}

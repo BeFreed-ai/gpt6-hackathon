@@ -35,6 +35,10 @@ class Company(BaseModel):
     payroll: float = 0
     produced: int = 0
     cap_revision: int = 0
+    operating_costs: float = 0
+    insolvent_days: int = 0
+    last_day_revenue: float = 0
+    closed: bool = False
 
 
 class Offer(BaseModel):
@@ -78,7 +82,7 @@ class Economy:
         terms = intent.terms or ActionTerms()
         if action in {ActionType.PAY_DIVIDEND, ActionType.SET_PRICE}:
             company = self.companies.get(intent.target_id or "")
-            if not company or company.founder_id != agent.id:
+            if not company or company.closed or company.founder_id != agent.id:
                 return self.fail(agent, intent, "Only the founder can manage this company.")
             site = self.world.objects[company.id]
             if self.world._approach(agent, intent, site, 55):
@@ -125,7 +129,7 @@ class Economy:
             site = self.world.objects.get(intent.target_id or "")
             if not site or site.kind not in {"launchpad", "kitchen", "market", "cafe", "tech"}:
                 return self.fail(agent, intent, "Choose a known launchpad, kitchen or workplace.")
-            if any(c.founder_id == agent.id for c in self.companies.values()):
+            if any(c.founder_id == agent.id and not c.closed for c in self.companies.values()):
                 return self.fail(agent, intent, "Manage your existing company first.")
             amount = round(terms.amount or 0, 2)
             if not (terms.name or "").strip() or terms.product not in PRODUCTS or amount < 2:
@@ -195,7 +199,7 @@ class Economy:
                 return self.fail(agent, intent, "You need a home before inviting a roommate.")
             subject_id = agent.home_id
         else:
-            if not company:
+            if not company or company.closed:
                 return self.fail(agent, intent, "Supply a company_id you know.")
             subject_id = company.id
             if kind == "job":
@@ -279,12 +283,16 @@ class Economy:
                 or not self.world.urban.room_available(home)
             ):
                 return self.fail(agent, intent, "The shared room is no longer available.")
-            agent.home_id = home.id
-            agent.rent_arrears = 0
+            calibration = getattr(self.world, "sf_economy", None)
+            if calibration:
+                calibration.move_home(agent, home, sender.id)
+            else:
+                agent.home_id = home.id
+                agent.rent_arrears = 0
             offer.status = "accepted"
         else:
             company = self.companies.get(offer.subject_id)
-            if not company:
+            if not company or company.closed:
                 return self.fail(agent, intent, "The company no longer exists.")
             if offer.kind == "investment":
                 if company.cap_revision != offer.cap_revision:
@@ -306,6 +314,11 @@ class Economy:
                 company.cap_revision += 1
             else:
                 company.employees[agent.id] = offer.amount
+                if getattr(self.world, "sf_economy", None):
+                    agent.workplace_id = company.id
+                    if agent.background:
+                        agent.background.employment_status = "employed"
+                        agent.background.employer_name = company.name
             offer.status = "accepted"
             self.sync(company)
         agent.current_action = f"{offer.status} {offer.kind} offer"
@@ -322,15 +335,22 @@ class Economy:
         return True
 
     def sync(self, company: Company) -> None:
-        self.world.objects[company.id].metadata = {
-            "founder_id": company.founder_id,
-            "purpose": company.purpose,
-            "product": company.product,
-            "price": company.price,
-            "stock": company.stock,
-            "produced": company.produced,
-            "revenue": company.revenue,
-        }
+        self.world.objects[company.id].metadata.update(
+            {
+                "founder_id": company.founder_id,
+                "purpose": company.purpose,
+                "product": company.product,
+                "price": company.price,
+                "stock": company.stock,
+                "produced": company.produced,
+                "revenue": company.revenue,
+                "open": not company.closed
+                and not self.world.objects[company.id].metadata.get("quake_damage"),
+                "closed": company.closed,
+                "operating_costs": company.operating_costs,
+                "insolvent_days": company.insolvent_days,
+            }
+        )
 
     def context_for(self, agent: AgentState) -> dict:
         offers = [
@@ -351,6 +371,9 @@ class Economy:
         }
 
     def tick(self) -> None:
+        calibration = getattr(self.world, "sf_economy", None)
+        if calibration:
+            calibration.tick()
         for offer in self.offers.values():
             if offer.status == "pending" and self.world.time >= offer.expires_at:
                 offer.status = "expired"

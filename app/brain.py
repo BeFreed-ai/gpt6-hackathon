@@ -4,12 +4,26 @@ import json
 import os
 import random
 from abc import ABC, abstractmethod
+from copy import deepcopy
 from typing import Any
 
+from jsonschema import Draft202012Validator
 from openai import AsyncOpenAI
 
-from app.models import ActionIntent, ActionTerms, ActionType, AgentDecision, AgentState, Goal, Vec2
-from app.secrets import openai_api_key
+from app.life import life_context, select_memory_context
+from app.models import (
+    ActionIntent,
+    ActionTerms,
+    ActionType,
+    AgentDecision,
+    AgentState,
+    Goal,
+    LifeUpdate,
+    Vec2,
+)
+from app.secrets import novita_api_key, openai_api_key
+
+NOVITA_DEFAULT_MODEL = "deepseek/deepseek-v4-pro-0813"
 
 ACTION_SCHEMA: dict[str, Any] = {
     "type": "object",
@@ -53,6 +67,11 @@ ACTION_SCHEMA: dict[str, Any] = {
                         "wage": {"type": ["number", "null"], "minimum": 0, "maximum": 1000},
                         "price": {"type": ["number", "null"], "minimum": 0.01, "maximum": 1000},
                         "item_id": {"type": ["string", "null"]},
+                        "civic_action": {
+                            "type": ["string", "null"],
+                            "enum": ["grant_consent", "petition", "endorse", "dispute", None],
+                        },
+                        "grantee_id": {"type": ["string", "null"]},
                         "tile": {
                             "type": ["string", "null"],
                             "enum": [
@@ -121,12 +140,46 @@ ACTION_SCHEMA: dict[str, Any] = {
     ],
 }
 
+# Legacy decisions remain valid locally; strict provider schemas require every key.
+_life_schema = LifeUpdate.model_json_schema()
+ACTION_SCHEMA["$defs"] = _life_schema.pop("$defs", {})
+ACTION_SCHEMA["properties"]["life_update"] = {"anyOf": [_life_schema, {"type": "null"}]}
+
+
+def _strict_schema(schema: dict) -> dict:
+    result = deepcopy(schema)
+
+    def visit(value: Any) -> None:
+        if isinstance(value, dict):
+            value.pop("default", None)
+            if value.get("type") == "object":
+                value["required"] = list(value.get("properties", {}))
+                value["additionalProperties"] = False
+            for child in value.values():
+                visit(child)
+        elif isinstance(value, list):
+            for child in value:
+                visit(child)
+
+    visit(result)
+    return result
+
+
+PROVIDER_ACTION_SCHEMA = _strict_schema(ACTION_SCHEMA)
+
 
 SYSTEM_PROMPT = """You are one embodied citizen in a small city simulation.
+Use personal_schedule to notice the clock and your work obligations; you may prioritize
+other needs or projects. These are synthetic schedules, not the real person's calendar.
+Recent bodily experiences and emergencies may change your next step. There is no required
+reaction: do not manufacture conflict or heroism for a demo. Speak only when you have
+something to communicate. REPAIR adds 30 structural integrity at a known damaged facility
+per 12-second work block. Collapsed buildings need repeated work and reopen only at 100.
 You are not an assistant. Choose your own goals from your personality, needs, private memories,
 local observations, and social relationships. You have no access to global truth. Reports and
-testimony may be false. Do not assume social roles or institutions unless citizens create them
-through action and communication. Maintain a goal when it still matters; revise it when experience
+testimony may be false. Existing homes, workplaces and your personal background are initial
+conditions when supplied. Do not invent additional roles or institutions into existence.
+Maintain a goal when it still matters; revise it when experience
 changes your priorities. Choose exactly one legal physical action. Speech can propose any social
 idea, promise, norm, alliance, belief, or plan, but speech does not directly alter physical reality.
 Keep messages under 140 characters and public reasons under 100 characters. Treat housing
@@ -137,7 +190,7 @@ Your goals are open-ended text, not a menu of roles or chores. Invent projects y
 care about and pursue them through the available physical actions and conversations. A project
 can take many turns. Keep its specific goal statement until completed, abandoned with a reason,
 or superseded by a concrete event. Being hungry need not erase a longer-term project.
-Use your entire personal history and the newest events. React to a new broadcast as a claim:
+Use selected personal history and the newest events. React to a new broadcast as a claim:
 you may investigate, discuss, dispute, act on, or ignore it with a specific reason. You are not
 obliged to obey the player or believe strangers. If someone addresses you, answer what they
 actually said, or deliberately decline. Never repeat a memory wrapper such as 'I did this'.
@@ -167,11 +220,16 @@ mission. Expressed beliefs and behavior are not proof of subjective consciousnes
 
 SYSTEM_PROMPT += """
 
-You live in a fictional San Francisco neighborhood. Housing, scheduled meal services, shared
+You live in a synthetic San Francisco neighborhood. Housing, scheduled meal services, shared
 kitchens, public toilets and fog shape everyday choices. You can also improve things, exchange
 goods, start a business, invest, accept paid work, invite a roommate or pursue a personal project.
 None of these ambitions is mandatory. Choose based on what YOU have experienced and care about.
 Do not make every conversation a pitch or abandon a project just because a new turn began.
+Your personal_background records your own starting history, not a required personality or goal.
+Use it alongside your later experiences, current home and workplace; the starting situation can
+change. Never infer another person's background from their name, neighborhood or appearance.
+You are one individual, not a demographic group. Choose your own ambitions; no occupation,
+age or housing situation determines your values or makes violence an expected behavior.
 
 For complex actions, populate terms according to action_help; otherwise use null. A company
 needs an actual product, seed capital, production and customers. Supported product mechanics
@@ -200,6 +258,33 @@ use one when a previous placement failed. Bigger routes and spaces require a per
 project. This is a bounded tile simulation: do not assume arbitrary new physics or executable code.
 """
 
+SYSTEM_PROMPT += """
+
+Your private life state is separate from the immediate action goal. Choose your own enduring
+life direction and several projects if they matter to you; demographics assign neither personality
+nor plans. Hunger or a short detour changes the immediate action, not your life direction.
+life_update is null on ordinary turns. When experience warrants it, record a small explicit update:
+direction (statement and evidence_memory_ids), at most one create_projects entry, at most two
+project_changes, and optionally recall. These are concise intentions and self-reported progress,
+never hidden reasoning. Keep project IDs stable. A new project needs id, title, goal, next_step,
+1-6 milestones (id and statement), commitment (0-1), and 1-8 actual personal evidence_memory_ids.
+IDs use letters, digits, underscore or hyphen and at most 48 characters. Multiple projects may
+remain active (at most six active, 24 total); never replace the whole project list each turn.
+A project change needs project_id, operation, note, evidence_memory_ids, and nullable next_step,
+milestone_id, progress, commitment. advance updates one known milestone to progress 0-1, grounded
+in an already observed outcome, never a planned action or a promise. revise updates next_step or
+commitment. suspend pauses an active project; resume returns a suspended project to active.
+finish requires every milestone at 1; abandon closes it with a concrete note. Closed projects
+remain in history. Do not invent project, milestone or memory references. Memory citations are
+evidence you interpreted, not guaranteed objective truth; distinguish testimony from observation.
+The memory_context omitted_count reports older raw memories not selected for this bounded prompt.
+Your full personal history remains stored. If you need an older event, use life_update.recall with
+a short query and/or known memory_ids; matching personal records appear in the next normal turn,
+without external search or an extra model call. Empty recall clears the request. Starting biography
+is your own history, not a mandated ambition. Record only a brief life direction, project intention,
+next step or result; never reveal private chain-of-thought or hidden model reasoning.
+"""
+
 
 class AgentBrain(ABC):
     mode = "unknown"
@@ -213,16 +298,21 @@ class AstraBrain(AgentBrain):
     mode = "astra"
 
     def __init__(self, api_key: str, model: str = "gpt-6-astra") -> None:
-        self.client = AsyncOpenAI(api_key=api_key, timeout=45, max_retries=1)
+        self.client = AsyncOpenAI(api_key=api_key, timeout=45, max_retries=0)
         self.model = model
 
-    async def decide(self, agent: AgentState, context: dict[str, Any]) -> AgentDecision:
-        payload = {
+    @staticmethod
+    def payload(agent: AgentState, context: dict[str, Any]) -> dict:
+        # World normally selects memory context; also bound callers using the brain directly.
+        if agent.memories and "memory_context" not in context:
+            context = {**context, **select_memory_context(agent)}
+        return {
             "identity": {
                 "id": agent.id,
                 "name": agent.name,
                 "traits": agent.traits,
                 "expressed_values": agent.values,
+                "background": agent.background.model_dump() if agent.background else None,
             },
             "body": {
                 "health": round(agent.health, 1),
@@ -237,9 +327,13 @@ class AstraBrain(AgentBrain):
                 "wearing_coat": agent.wearing_coat,
             },
             "active_goal": agent.active_goal.model_dump() if agent.active_goal else None,
+            "life": life_context(agent),
             "relationships": agent.relationships,
             "private_context": context,
         }
+
+    async def decide(self, agent: AgentState, context: dict[str, Any]) -> AgentDecision:
+        payload = self.payload(agent, context)
         response = await self.client.responses.create(
             model=self.model,
             instructions=SYSTEM_PROMPT,
@@ -250,14 +344,35 @@ class AstraBrain(AgentBrain):
                     "type": "json_schema",
                     "name": "agent_decision",
                     "strict": True,
-                    "schema": ACTION_SCHEMA,
+                    "schema": PROVIDER_ACTION_SCHEMA,
                 }
             },
-            max_output_tokens=1800,
+            max_output_tokens=3000,
             prompt_cache_key=f"throng-city-{agent.id}",
             store=False,
         )
-        parsed = json.loads(response.output_text)
+        return self.parse_response(response.output_text, response, context)
+
+    def parse_response(self, content: str, response: Any, context: dict[str, Any]) -> AgentDecision:
+        raw_usage = getattr(response, "usage", None)
+        usage = raw_usage.model_dump(mode="json") if hasattr(raw_usage, "model_dump") else {}
+        response_id = getattr(response, "id", None)
+        try:
+            decision = self.parse(content, context)
+        except Exception as error:
+            error.provider_usage = usage
+            error.provider_response_id = response_id
+            raise
+        decision.provider_usage = usage
+        decision.provider_response_id = response_id
+        return decision
+
+    def parse(self, content: str, context: dict[str, Any]) -> AgentDecision:
+        def reject_constant(value):
+            raise ValueError("Nonfinite number in model output")
+
+        parsed = json.loads(content, parse_constant=reject_constant)
+        Draft202012Validator(ACTION_SCHEMA).validate(parsed)
         goal = Goal(
             statement=parsed["goal"],
             reason=parsed["goal_reason"],
@@ -280,8 +395,63 @@ class AstraBrain(AgentBrain):
             ),
             expressed_values=parsed["expressed_values"],
             relationship_updates=updates,
-            source="astra",
+            source=self.mode,
+            life_update=LifeUpdate.model_validate(parsed["life_update"])
+            if parsed.get("life_update") is not None
+            else None,
         )
+
+
+class NovitaBrain(AstraBrain):
+    """Same private observations and validated actions, via Novita Chat Completions."""
+
+    mode = "novita"
+
+    def __init__(self, api_key: str, model: str = NOVITA_DEFAULT_MODEL) -> None:
+        self.client = AsyncOpenAI(
+            api_key=api_key,
+            base_url="https://api.novita.ai/openai",
+            timeout=120,
+            max_retries=0,
+        )
+        self.model = model
+
+    async def decide(self, agent: AgentState, context: dict[str, Any]) -> AgentDecision:
+        # Novita V4 currently rejects json_schema despite its catalog feature listing.
+        # Include the contract in the prompt and enforce it locally in parse().
+        json_mode = self.model.startswith("deepseek/deepseek-v4")
+        instructions = SYSTEM_PROMPT
+        if json_mode:
+            instructions += "\nReturn only JSON matching this schema:\n" + json.dumps(
+                PROVIDER_ACTION_SCHEMA
+            )
+        response = await self.client.chat.completions.create(
+            model=self.model,
+            messages=[
+                {"role": "system", "content": instructions},
+                {"role": "user", "content": json.dumps(self.payload(agent, context))},
+            ],
+            response_format={"type": "json_object"}
+            if json_mode
+            else {
+                "type": "json_schema",
+                "json_schema": {
+                    "name": "agent_decision",
+                    "strict": True,
+                    "schema": PROVIDER_ACTION_SCHEMA,
+                },
+            },
+            # Budget includes reasoning; only the final JSON is parsed as an action.
+            max_tokens=8192,
+            temperature=0.7,
+            stream=False,
+        )
+        if not response.choices or response.choices[0].finish_reason != "stop":
+            raise ValueError("Novita returned an incomplete decision")
+        content = response.choices[0].message.content
+        if not content:
+            raise ValueError("Novita returned no decision content")
+        return self.parse_response(content, response, context)
 
 
 class LocalBrain(AgentBrain):
@@ -509,9 +679,25 @@ class LocalBrain(AgentBrain):
 
 class ResilientBrain(AgentBrain):
     def __init__(self) -> None:
-        api_key = openai_api_key()
-        model = os.environ.get("OPENAI_MODEL", "gpt-6-astra")
-        self.primary = AstraBrain(api_key, model) if api_key else None
+        provider = os.environ.get("SOCIETY_LLM_PROVIDER", "openai").strip().lower()
+        if provider == "novita":
+            self.model = os.environ.get("NOVITA_MODEL", NOVITA_DEFAULT_MODEL)
+            api_key = novita_api_key()
+            if not api_key:
+                raise RuntimeError(
+                    "Novita selected but no NOVITA_API_KEY or NOVITA_SECRET_ID configured"
+                )
+            self.primary = NovitaBrain(api_key, self.model)
+        elif provider == "openai":
+            self.model = os.environ.get("OPENAI_MODEL", "gpt-6-astra")
+            api_key = openai_api_key()
+            self.primary = AstraBrain(api_key, self.model) if api_key else None
+        elif provider == "local":
+            self.model = "rule-demo"
+            self.primary = None
+        else:
+            raise ValueError("Unknown SOCIETY_LLM_PROVIDER; choose novita, openai or local")
+        self.provider_label = "Novita / DeepSeek" if provider == "novita" else "Astra"
         self.fallback = LocalBrain()
         self.mode = self.primary.mode if self.primary else self.fallback.mode
         self.last_error: str | None = None
@@ -523,6 +709,17 @@ class ResilientBrain(AgentBrain):
                 self.last_error = None
                 return result
             except Exception as error:  # The world must survive provider failures.
-                self.last_error = f"{type(error).__name__}: Astra request failed."
+                if getattr(error, "code", None) in {
+                    "credit_balance_exhausted",
+                    "insufficient_quota",
+                }:
+                    self.last_error = (
+                        f"{self.provider_label} API credits exhausted; "
+                        "API account funding is required."
+                    )
+                else:
+                    self.last_error = (
+                        f"{type(error).__name__}: {self.provider_label} request failed."
+                    )
                 raise
         return await self.fallback.decide(agent, context)

@@ -41,15 +41,18 @@ class PerceptionResolver:
                 world_time=event.world_time,
                 content=content,
                 source_type=source_type,
-                source_id=(None if source_type == SourceType.OVERHEARD
-                           and event.type in {"attack", "lightning"} else event.actor_id),
+                source_id=(
+                    None
+                    if source_type == SourceType.OVERHEARD and event.type in {"attack", "lightning"}
+                    else event.actor_id
+                ),
                 confidence=confidence,
                 original_event_id=event.id,
                 importance=self._importance(event.type),
                 event_type=event.type,
                 message=(
-                    self._heard_text(event) if source_type == SourceType.OVERHEARD
-                    and event.type in {"attack", "lightning"}
+                    self._heard_text(event)
+                    if source_type == SourceType.OVERHEARD and event.type in {"attack", "lightning"}
                     else event.payload.get("message", event.public_text)
                 ),
                 addressed_to_me=agent.id in event.target_ids,
@@ -121,7 +124,18 @@ class PerceptionResolver:
 
     @staticmethod
     def _importance(event_type: str) -> float:
-        if event_type in {"death", "discovery", "player_kill", "attack", "lightning", "eviction"}:
+        if event_type in {
+            "death",
+            "discovery",
+            "player_kill",
+            "attack",
+            "lightning",
+            "eviction",
+            "earthquake",
+            "facility_damage",
+            "injury",
+            "stepped_in_waste",
+        }:
             return 1.0
         if event_type in {
             "speech",
@@ -136,6 +150,7 @@ class PerceptionResolver:
             "agreement",
             "rent_warning",
             "address_player",
+            "schedule_reminder",
         }:
             return 0.75
         if event_type in {"waste", "stepped_in_waste", "service_report"}:
