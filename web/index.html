@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#10130f" />
+    <title>Throng City — Live Society</title>
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark"><span></span><span></span><span></span></div>
+          <div>
+            <h1>THRONG CITY</h1>
+            <p>A LITTLE CITY. A LIFE OF THEIR OWN.</p>
+          </div>
+        </div>
+        <div class="world-readout">
+          <div><span class="readout-label">CITY TIME</span><strong id="world-time">00:00</strong></div>
+          <div><span class="readout-label">WEATHER</span><strong id="weather">CLEAR</strong></div>
+          <div><span class="readout-label">BRAIN</span><strong id="brain-mode">CONNECTING</strong></div>
+          <span id="connection-dot" class="connection-dot"></span>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <section class="simulation-panel">
+          <div class="sim-toolbar">
+            <div class="transport-controls">
+              <button id="play-pause" class="icon-button" title="Pause simulation">Ⅱ</button>
+              <button class="speed-button active" data-speed="1">1×</button>
+              <button class="speed-button" data-speed="2">2×</button>
+              <button class="speed-button" data-speed="4">4×</button>
+            </div>
+            <div class="tool-divider"></div>
+            <div class="intervention-controls">
+              <span class="toolbar-label">INTERVENE</span>
+              <button class="tool-button" data-tool="food"><span>●</span> Drop food</button>
+              <button class="tool-button danger" data-tool="lightning" title="Direct strikes kill. Nearby citizens can be injured."><span>ϟ</span> Lightning</button>
+              <button class="tool-button danger" data-tool="kill" title="Kill one citizen permanently in this run."><span>×</span> Kill citizen</button>
+              <button class="tool-button" data-tool="toilet"><span>▣</span> Add restroom</button>
+              <button class="tool-button" data-tool="fog"><span>≋</span> Toggle fog</button>
+              <button class="tool-button" data-tool="broadcast"><span>◖</span> Broadcast</button>
+              <select id="build-tool" aria-label="Edit city terrain">
+                <option value="">Build / edit</option>
+                <option value="road">Road</option><option value="wall">Wall</option>
+                <option value="floor">Floor</option><option value="garden">Garden</option>
+                <option value="bench">Bench</option><option value="kitchen">Kitchen</option>
+                <option value="toilet">Restroom</option><option value="shelter">Shelter</option>
+                <option value="grass">Demolish</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="canvas-wrap" class="canvas-wrap">
+            <canvas id="world-canvas" aria-label="Living pixel city. Click a citizen to inspect, drag to pan, scroll to zoom."></canvas>
+            <div class="map-caption"><span id="map-location">SAN FRANCISCO / A SMALL WORLD</span><span id="world-day">DAY 01</span></div>
+            <div id="tool-hint" class="tool-hint hidden">Click the city to place this intervention</div>
+            <div id="interaction-status" class="interaction-status hidden" role="status"></div>
+            <div class="camera-controls" aria-label="Map camera">
+              <button id="zoom-out" aria-label="Zoom out">−</button>
+              <button id="zoom-fit" title="Fit entire city"><span id="zoom-level">100%</span></button>
+              <button id="zoom-in" aria-label="Zoom in">+</button>
+            </div>
+            <div class="map-key">
+              <span><i class="key-agent"></i> Citizen</span>
+              <span><i class="key-unhoused"></i> Unhoused</span>
+              <span><i class="key-food"></i> Food</span>
+              <span><i class="key-waste"></i> Waste</span>
+            </div>
+          </div>
+
+          <div class="city-stats">
+            <article><span>Population</span><strong id="stat-population">—</strong></article>
+            <article><span>Without housing</span><strong id="stat-unhoused">—</strong></article>
+            <article><span>Street hazards</span><strong id="stat-waste">—</strong></article>
+            <article><span>Citizen businesses</span><strong id="stat-events">—</strong></article>
+          </div>
+        </section>
+
+        <aside class="observer-panel">
+          <div class="panel-tabs">
+            <button class="panel-tab active" data-panel="citizen">CITIZEN</button>
+            <button class="panel-tab" data-panel="events">CITY FEED</button>
+            <button class="panel-tab" data-panel="economy">CITY LIFE</button>
+          </div>
+
+          <section id="citizen-panel" class="panel-content">
+            <div id="empty-inspector" class="empty-inspector">
+              <div class="empty-orbit"><div class="agent-avatar"><span></span></div></div>
+              <span class="eyebrow">EVERY LITTLE LIFE HAS A STORY</span>
+              <h2>Who lives here?</h2>
+              <p>Click a yellow citizen to discover what they remember, what they believe, and what they want to do next.</p>
+              <div class="field-notes"><span>FIELD NOTES / 001</span><p>The city keeps living while you watch. Leave an apple. Listen to a conversation. See what happens.</p></div>
+            </div>
+            <div id="agent-inspector" class="agent-inspector hidden">
+              <div class="agent-heading">
+                <div id="agent-avatar" class="agent-avatar"><span></span></div>
+                <div>
+                  <span id="agent-id" class="eyebrow"></span>
+                  <h2 id="agent-name"></h2>
+                  <p id="agent-status"></p>
+                  <p id="decision-source"></p>
+                </div>
+              </div>
+
+              <div class="vitals">
+                <div><span>Health</span><div class="meter"><i id="health-meter"></i></div></div>
+                <div><span>Energy</span><div class="meter"><i id="energy-meter"></i></div></div>
+                <div><span>Hunger</span><div class="meter warning"><i id="hunger-meter"></i></div></div>
+                <div><span>Stress</span><div class="meter danger"><i id="stress-meter"></i></div></div>
+              </div>
+
+              <div class="insight-card thought-card">
+                <span class="eyebrow">CURRENT THOUGHT</span>
+                <p id="agent-thought"></p>
+                <p id="action-result"></p>
+              </div>
+
+              <div class="insight-card">
+                <span class="eyebrow">SELF-CHOSEN GOAL</span>
+                <h3 id="agent-goal"></h3>
+                <p id="agent-goal-reason"></p>
+              </div>
+
+              <div class="inspector-section">
+                <div class="section-title"><span>Expressed values</span><small>Agent-authored</small></div>
+                <div id="agent-values" class="chips"></div>
+              </div>
+
+              <div class="inspector-section">
+                <div class="section-title"><span>Life context</span></div>
+                <dl class="facts">
+                  <div><dt>Home</dt><dd id="agent-home"></dd></div>
+                  <div><dt>Work</dt><dd id="agent-work"></dd></div>
+                  <div><dt>Credits</dt><dd id="agent-credits"></dd></div>
+                  <div><dt>Warmth</dt><dd id="agent-warmth"></dd></div>
+                  <div><dt>Bag</dt><dd id="agent-inventory"></dd></div>
+                </dl>
+              </div>
+
+              <div class="inspector-section">
+                <div class="section-title"><span>Business & agreements</span></div>
+                <div id="agent-business"></div>
+              </div>
+
+              <div class="inspector-section">
+                <div class="section-title"><span>Private memory</span><small id="memory-count"></small></div>
+                <div id="agent-memories" class="memory-list"></div>
+              </div>
+            </div>
+          </section>
+
+          <section id="events-panel" class="panel-content hidden">
+            <div class="feed-heading">
+              <span class="live-pulse"></span>
+              <div><h2>City feed</h2><p>Objective world events</p></div>
+            </div>
+            <div id="event-feed" class="event-feed"></div>
+          </section>
+          <section id="economy-panel" class="panel-content hidden">
+            <div class="feed-heading"><div><h2>City life</h2><p>Real goods. Shared places. Citizen-owned businesses.</p></div></div>
+            <div class="economy-summary" id="economy-summary"></div>
+            <div class="section-title"><span>Messages to you</span><small>Citizen initiated</small></div>
+            <div id="player-messages"></div>
+            <div class="section-title"><span>Your interventions</span><small>Observer evidence</small></div>
+            <div id="intervention-log"></div>
+            <p class="muted">Noticed means delivered to personal memory. A later decision is not proof of agreement or consciousness.</p>
+            <div class="section-title"><span>Citizen businesses</span><small>Observer ledger</small></div>
+            <div id="company-list"></div>
+            <div class="section-title"><span>Neighborhood facilities</span></div>
+            <div id="facility-list"></div>
+            <p class="muted economy-note">Ledger visibility is for you only. Citizens learn through their own observations and agreements. All credits and investments are fictional.</p>
+          </section>
+        </aside>
+      </main>
+
+      <footer class="footer-bar">
+        <span>OBSERVER MODE</span>
+        <p>Citizens cannot detect inspection. Direct interventions become observable world events.</p>
+        <span id="model-label">MODEL: GPT-6-ASTRA</span>
+      </footer>
+    </div>
+    <dialog id="broadcast-dialog">
+      <form id="broadcast-form">
+        <h2>Send a signal</h2>
+        <p>Citizens can hear your message. Each decides what to make of it.</p>
+        <label for="broadcast-message">Broadcast message</label>
+        <textarea id="broadcast-message" maxlength="180" rows="4" required placeholder="There is food near Signal Park. Would anyone like to organize a shared meal?"></textarea>
+        <p id="broadcast-mode-note"></p>
+        <div class="dialog-actions"><button type="button" id="broadcast-cancel">Cancel</button><button type="submit">Transmit</button></div>
+      </form>
+    </dialog>
+    <script type="module" src="/static/app.js"></script>
+  </body>
+</html>
